@@ -1,2 +1,2 @@
-# SoftEng2
-This is place to have all the meeting, code and project planning for software engineering 2 course at University of Manitoba
+# Software Engineering 2 Project - Digital Deck
+Digital Deck web application aims to provide a digital space for users where they can instantly avail digital cards and play the game without any hassle
