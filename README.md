@@ -11,7 +11,11 @@
 
 ### Description
 
-Digital Deck web application aims to provide a digital space for users where they can instantly avail digital cards and play the game without any hassle
+Digital Deck is an application that allows users to access a digital deck of card and play with other users in a game session. Users of the same game session will be able to access the same deck of card and play whatever cardgame they want just like they would in person. The application will also support preset gamemodes that will automatically guide the players through a cardgame with a predefined set of rules such as Blackjack or Poker.
+
+### Objective
+
+Digital Deck web application aims to provide a digital space for users where they can instantly avail digital cards and play cardgames without any hassle.
 
 ### Core Features
 
