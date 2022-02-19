@@ -1,0 +1,28 @@
+{
+  "name": "digital-deck-server",
+  "version": "1.0.0",
+  "description": "Backend implementation for digital deck application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suryarawat/DigitalDeck.git"
+  },
+  "keywords": [
+    "server",
+    "socket",
+    "based"
+  ],
+  "author": "empty",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suryarawat/DigitalDeck/issues"
+  },
+  "homepage": "https://github.com/suryarawat/DigitalDeck#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3"
+  }
+}
