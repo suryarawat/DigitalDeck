@@ -3,11 +3,11 @@ import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 </script>
 
+
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
+    <div class="wrapper" v-on:click=serverGetReq>
       <HelloWorld msg="You did it!" />
     </div>
   </header>
@@ -79,3 +79,16 @@ a,
   }
 }
 </style>
+<script>
+import EventService from './scripts/EventService.js'
+export default {
+  name: 'App',
+  // NEW
+  methods: {
+    async serverGetReq() {
+      // Use the eventService to call the apiCall() method
+      EventService.apiCall();
+    }
+  }
+}
+</script>
