@@ -1,51 +1,81 @@
+/**
+ * Class for player data and communications.
+ */
 module.exports = class Player {
-  // keep track of distint players
+  // keep track of distinct players
   static players = 0;
   constructor(cards) {
     this.cards = cards;
     this.playerId = Player.players++;
   }
 
+  /**
+   * Resets the ids.
+   * */
   static resetPlayerCount() {
     Player.players = 0;
   }
 
+  /**
+   * Replace current cards with a new Array of cards
+   *
+   * @param cards The new cards array to replace the older one.
+   */
   updateCards(cards) {
-    // Update the whole deck of cards
     this.cards = cards;
   }
 
+  /**
+   * add a card to bottom of this players stack
+   *
+   * @param card the card to be added
+   */
   addCardBottom(card) {
-    // Add card to bottom which is at index 0 (stack)
     this.cards.splice(0, 0, card);
   }
 
+  /**
+   * add a card to top of this players stack
+   *
+   * @param card the card to be added
+   */
   addCardTop(card) {
-    // Add card to top of the stack
     this.cards.push(card);
   }
 
+  /**
+   * add a card to desired position of this players stack
+   *
+   * @param card the card to be added
+   */
   addCard(card, index) {
-    // Add card to bottom which is at index 0 (stack)
     this.cards.splice(1, 0, card);
   }
 
+  /**
+   * remove a card from bottom of this players stack
+   */
   removeCardBottom() {
-    // Remove a card from bottom of stack
     if (this.cards.length > 0) {
       this.cards.splice(0, 1);
     }
   }
 
+  /**
+   * remove a card from top of this players stack
+   */
   removeCardTop() {
-    // Remove a card from the top of stack
     if (this.cards.length > 0) {
       this.cards.splice(this.cards.length - 1, 1);
     }
   }
 
+  /**
+   * remove a card from given index of this players stack
+   *
+   * @param index The index of the card to remove
+   */
   removeCard(index) {
-    // Remove a card from the stack
     if (this.cards.length > 0) {
       this.cards.splice(index, 1);
     }

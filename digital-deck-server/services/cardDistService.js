@@ -2,6 +2,15 @@ var Player = require("../services/player.js");
 var Table = require("../services/table.js");
 
 module.exports = {
+  /**
+   * Distributes the cards to the players based on the params.
+   *
+   * @param decks The number of decks to be used in the game session.
+   * @param players The number of players in a session.
+   * @param cardsPerPlayer The number of cards to give per player.
+   * @param cardsOnTable The number of cards to put on the table.
+   * @return {json} The json object containing players with player ids and cards assigned to them, table and cards of table and remaining cards on the deck.
+   */
   distCards: function (decks, players, cardsPerPlayer, cardsOnTable) {
     playerObjs = [];
     table = new Table([]);
@@ -31,6 +40,13 @@ module.exports = {
   },
 };
 
+/**
+   * Temporary method to create stub cards deck
+   *
+   * @param decks The number of decks to be used in the game session.
+   * @return {Array} Array containg cards based on how many deck, currently no shuffling here.
+   */
+  // TODO: This needs to be modified for shuffled cards.
 function getCards(decks) {
   cards = [];
   for (var j = 0; j < decks; j++) {
