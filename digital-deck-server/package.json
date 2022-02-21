@@ -23,6 +23,8 @@
   "homepage": "https://github.com/suryarawat/DigitalDeck#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "mongodb": "^4.4.0",
+    "mongoose": "^6.2.2"
   }
 }
