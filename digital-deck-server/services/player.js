@@ -80,8 +80,10 @@ module.exports = class Player {
    * @param index The index of the card to remove
    */
   removeCard(index) {
+    let cardToRemove = this.cards[index];
     if (this.cards.length > 0) {
       this.cards.splice(index, 1);
     }
+    return cardToRemove;
   }
 };
