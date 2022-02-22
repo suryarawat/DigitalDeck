@@ -11,7 +11,7 @@ module.exports = class Session {
     this.numDecks = decks;
     this.numPlayers = players;
     this.sessionId = Session.id++;
-    
+
     // new player ids
     Player.resetPlayerCount();
     // initial card distribution
@@ -21,6 +21,7 @@ module.exports = class Session {
       cardsPerPlayer,
       cardsOnTable
     );
+
     this.players = assignments.players;
     this.table = assignments.table;
     this.deck = assignments.deck;

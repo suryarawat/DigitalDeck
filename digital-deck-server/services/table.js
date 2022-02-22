@@ -11,7 +11,7 @@ module.exports = class Table {
    *
    * @param cards The new cards array to replace the older one.
    */
-   updateCards(cards) {
+  updateCards(cards) {
     this.cards = cards;
   }
 
@@ -37,17 +37,21 @@ module.exports = class Table {
    * remove a card from bottom of this tables stack
    */
   removeCardBottom() {
+    let bottomCard = this.cards[0];
     if (this.cards.length > 0) {
       this.cards.splice(0, 1);
     }
+    return bottomCard;
   }
 
   /**
    * remove a card from top of this tables stack
    */
   removeCardTop() {
+    let topCard = this.cards[this.cards.length - 1];
     if (this.cards.length > 0) {
       this.cards.splice(this.cards.length - 1, 1);
     }
+    return topCard;
   }
 };
