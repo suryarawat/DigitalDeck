@@ -13,7 +13,7 @@ var concSessions = [];
  * Creates a session with given pramas.
  *
  * Example
- * call: localhost:5000/new-session?decks=1&cardsPerPlayer=5&cardsOnTable=1
+ * POST req: localhost:5000/new-session?decks=1&players=1&cardsPerPlayer=5&cardsOnTable=1
  * response: {
  *       "numDecks":1,
  *       "numPlayers":2,
@@ -32,16 +32,22 @@ var concSessions = [];
 app.post("/new-session", function (req, res) {
   // process request
   var decks = Number(req.query.decks);
+  var players = Number(req.query.players);
   var cardsPerPlayer = Number(req.query.cardsPerPlayer);
   var cardsOnTable = Number(req.query.cardsOnTable);
 
-  if (isNaN(decks) || isNaN(cardsPerPlayer) || isNaN(cardsOnTable)) {
+  if (
+    isNaN(decks) ||
+    isNaN(players) ||
+    isNaN(cardsPerPlayer) ||
+    isNaN(cardsOnTable)
+  ) {
     throw new Error(
       "Invalid call, needs decks, player, cardsPerPlayer and cardsOnTable as numbers in the query."
     );
   }
 
-  currSession = new Session(decks, cardsPerPlayer, cardsOnTable);
+  currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
   concSessions.push(currSession);
   res.send(currSession);
 });

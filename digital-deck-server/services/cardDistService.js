@@ -10,7 +10,7 @@ module.exports = {
    * @param cardsOnTable The number of cards to put on the table.
    * @return {json} The json object containing players with player ids and cards assigned to them, table and cards of table and remaining cards on the deck.
    */
-  distCards: function (decks, cardsPerPlayer, cardsOnTable) {
+  distCards: function (decks, players, cardsPerPlayer, cardsOnTable) {
     let playerObjs = [];
     let table = new Table([]);
 
