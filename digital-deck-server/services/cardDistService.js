@@ -16,13 +16,15 @@ module.exports = {
 
     let cards = getCards(decks);
 
-    if (cardsPerPlayer <= 52 * decks - cardsOnTable) {
-      let currPlayer = new Player([]);
-      for (var j = 0; j < cardsPerPlayer; j++) {
-        let card = cards.pop();
-        currPlayer.addCardTop(card);
+    if (cardsPerPlayer * players <= 52 * decks - cardsOnTable) {
+      for (var i = 0; i < players; i++) {
+        let currPlayer = new Player([]);
+        for (var j = 0; j < cardsPerPlayer; j++) {
+          let card = cards.pop();
+          currPlayer.addCardTop(card);
+        }
+        playerObjs.push(currPlayer);
       }
-      playerObjs.push(currPlayer);
 
       for (var k = 0; k < cardsOnTable; k++) {
         let card = cards.pop();
@@ -30,7 +32,7 @@ module.exports = {
       }
     } else {
       throw new Error(
-        `Cannot distribute ${cardsPerPlayer} cards to the player.`
+        `Not enough cards, Cannot distribute ${cardsPerPlayer} cards each to ${players} players and ${cardsOnTable} on the table.`
       );
     }
     return { players: playerObjs, table: table, deck: cards };
