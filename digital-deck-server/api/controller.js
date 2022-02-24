@@ -1,11 +1,16 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const router = express.Router();
 var Session = require("../services/session.js");
 
 const app = express();
 const port = 5000;
 
 app.use(cors());
+app.use("/", router);
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 var concSessions = [];
 
@@ -29,12 +34,12 @@ var concSessions = [];
  *   }
  */
 
-app.post("/new-session", function (req, res) {
+router.post("/new-session", function (req, res) {
   // process request
-  var decks = Number(req.query.decks);
-  var players = Number(req.query.players);
-  var cardsPerPlayer = Number(req.query.cardsPerPlayer);
-  var cardsOnTable = Number(req.query.cardsOnTable);
+  var decks = Number(req.body.decks);
+  var players = Number(req.body.players);
+  var cardsPerPlayer = Number(req.body.cardsPerPlayer);
+  var cardsOnTable = Number(req.body.cardsOnTable);
 
   if (
     isNaN(decks) ||
@@ -50,6 +55,31 @@ app.post("/new-session", function (req, res) {
   currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
   concSessions.push(currSession);
   res.send(currSession);
+});
+
+/**
+ * Draw a card from the deck and add it to the player's hand
+ *
+ * Example response: {
+ *      "cards": [52],
+ *      "deck": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51]
+ *   }
+ */
+router.post("/draw-cards", async function (req, res) {
+  let sessionId = Number(req.body.sessionId);
+  let playerId = Number(req.body.playerId);
+  let numOfCards = Number(req.body.numOfCards);
+
+  if (isNaN(sessionId) || isNaN(playerId) || isNaN(numOfCards)) {
+    res.status(400).send('Invalid call. Needs sessionId, playerId, and numOfCards as numbers in the query.');
+  } else {
+    let currSession = concSessions.find(s => s.sessionId === sessionId);
+    if (!currSession) {
+      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+    } else {
+      res.status(200).send(currSession.drawCards(playerId, numOfCards));
+    }
+  }
 });
 
 app.listen(port, () => {
