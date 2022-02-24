@@ -52,6 +52,30 @@ app.post("/new-session", function (req, res) {
   res.send(currSession);
 });
 
+app.post("/draw-cards", function (req, res) {
+  var sessionId = Number(req.query.sessionId);
+  var playerId = Number(req.query.playerId);
+  var numOfCards = Number(req.query.numOfCards);
+
+  if (
+    isNaN(sessionId) ||
+    isNaN(playerId) ||
+    isNaN(numOfCards)
+  ) {
+    throw new Error(
+      "Invalid call. Needs sessionId, playerId, and numOfCards as numbers in the query."
+    );
+  }
+
+  var currSession = concSessions.find(s => s.sessionId === sessionId);
+  if (!currSession) {
+    throw new Error(
+      `Invalid request. Could not find session with Id ${sessionId}`
+    );
+  }
+  res.send(currSession.drawCards(playerId, numOfCards));
+});
+
 app.listen(port, () => {
   console.log("Now listening on port " + port);
 });
