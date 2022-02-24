@@ -1,5 +1,7 @@
 var Player = require("../services/player.js");
 var Table = require("../services/table.js");
+var cardShuffleService = require("./cardShuffleService.js");
+
 
 module.exports = {
   /**
@@ -53,12 +55,7 @@ function getCards(decks) {
       cards.push(i);
     }
   }
-  
-  for (let i = cards.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * i);
-    let temp = cards[i];
-    cards[i] = cards[j];
-    cards[j] = temp;
-  }
-  return cards;
+ return cardShuffleService.ShuffleCards(
+    cards
+  ).cards;
 }
