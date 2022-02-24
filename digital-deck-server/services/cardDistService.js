@@ -40,7 +40,7 @@ module.exports = {
 };
 
 /**
- * Temporary method to create stub cards deck
+ * Temporary method to create stub cards deck & Shuffling them
  *
  * @param decks The number of decks to be used in the game session.
  * @return {Array} Array containg cards based on how many deck, currently no shuffling here.
@@ -52,6 +52,13 @@ function getCards(decks) {
     for (var i = 1; i <= 52; i++) {
       cards.push(i);
     }
+  }
+  
+  for (let i = cards.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * i);
+    let temp = cards[i];
+    cards[i] = cards[j];
+    cards[j] = temp;
   }
   return cards;
 }
