@@ -1,11 +1,16 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
+const router = express.Router();
 var Session = require("../services/session.js");
 
 const app = express();
 const port = 5000;
 
 app.use(cors());
+app.use("/", router);
+router.use(bodyParser.urlencoded({ extended: false }));
+router.use(bodyParser.json());
 
 var concSessions = [];
 
@@ -29,12 +34,12 @@ var concSessions = [];
  *   }
  */
 
-app.post("/new-session", function (req, res) {
+router.post("/new-session", function (req, res) {
   // process request
-  var decks = Number(req.query.decks);
-  var players = Number(req.query.players);
-  var cardsPerPlayer = Number(req.query.cardsPerPlayer);
-  var cardsOnTable = Number(req.query.cardsOnTable);
+  var decks = Number(req.body.decks);
+  var players = Number(req.body.players);
+  var cardsPerPlayer = Number(req.body.cardsPerPlayer);
+  var cardsOnTable = Number(req.body.cardsOnTable);
 
   if (
     isNaN(decks) ||
@@ -52,28 +57,21 @@ app.post("/new-session", function (req, res) {
   res.send(currSession);
 });
 
-app.post("/draw-cards", function (req, res) {
-  var sessionId = Number(req.query.sessionId);
-  var playerId = Number(req.query.playerId);
-  var numOfCards = Number(req.query.numOfCards);
+router.post("/draw-cards", async function (req, res) {
+  let sessionId = Number(req.body.sessionId);
+  let playerId = Number(req.body.playerId);
+  let numOfCards = Number(req.body.numOfCards);
 
-  if (
-    isNaN(sessionId) ||
-    isNaN(playerId) ||
-    isNaN(numOfCards)
-  ) {
-    throw new Error(
-      "Invalid call. Needs sessionId, playerId, and numOfCards as numbers in the query."
-    );
+  if (isNaN(sessionId) || isNaN(playerId) || isNaN(numOfCards)) {
+    res.status(400).send('Invalid call. Needs sessionId, playerId, and numOfCards as numbers in the query.');
+  } else {
+    let currSession = concSessions.find(s => s.sessionId === sessionId);
+    if (!currSession) {
+      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+    } else {
+      res.status(200).send(currSession.drawCards(playerId, numOfCards));
+    }
   }
-
-  var currSession = concSessions.find(s => s.sessionId === sessionId);
-  if (!currSession) {
-    throw new Error(
-      `Invalid request. Could not find session with Id ${sessionId}`
-    );
-  }
-  res.send(currSession.drawCards(playerId, numOfCards));
 });
 
 app.listen(port, () => {
