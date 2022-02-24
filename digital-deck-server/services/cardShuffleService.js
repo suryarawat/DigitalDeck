@@ -6,7 +6,7 @@ module.exports = {
      * @return {json} The json containing the ids cards currently in the player's hand and the current deck
      */
     ShuffleCards: function(cards) {
-      if (cards.length>=1) {
+      if (cards.length>1) {
         for (let i = cards.length - 1; i > 0; i--) {
             let j = Math.floor(Math.random() * i);
             let temp = cards[i];
