@@ -43,7 +43,7 @@ app.post("/new-session", function (req, res) {
     isNaN(cardsOnTable)
   ) {
     throw new Error(
-      "Invalid call, needs decks, player, cardsPerPlayer and cardsOnTable as numbers in the query."
+      "Invalid call, needs decks, players, cardsPerPlayer and cardsOnTable as numbers in the query."
     );
   }
 

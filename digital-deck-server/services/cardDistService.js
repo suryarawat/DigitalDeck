@@ -55,7 +55,5 @@ function getCards(decks) {
       cards.push(i);
     }
   }
- return cardShuffleService.ShuffleCards(
-    cards
-  ).cards;
+ return cardShuffleService.shuffleCards(cards);
 }
