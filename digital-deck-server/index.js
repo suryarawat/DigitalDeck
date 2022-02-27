@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 app.use('/session', sessionRoute);
 app.use('/player', playerRoute);
 
-app.listen(port, () => {
-    console.log("Now listening on port " + port);
-  });
+
+const server = app.listen(port);
+console.log("Now listening on port " + port);
 
 
-module.exports = app;
+module.exports = { app , server};
