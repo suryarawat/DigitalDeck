@@ -5,8 +5,8 @@ const cardDrawService = require('../services/cardDrawService');
 router.post('/playcard', async function(req, res) {
     var sessionId = req.body.sessionId; 
     var playerId = req.body.playerId; 
-    var cardIndex = req.body.cardIndex;  
-    var card = req.body.card; 
+    var cardIndex = req.body.cardIndex;  // there should only be one of this required, either the card or the index
+    var card = req.body.card;           // since the card needs to be added to the table, sending the index of the card in player's hand shouldn't be required
 
     var session = getSession(sessionId);
     var table = session.table;
@@ -19,6 +19,7 @@ router.post('/playcard', async function(req, res) {
     }
     catch(err){
         console.log(err);
+        res.status(400).send();
     }
 });
 
