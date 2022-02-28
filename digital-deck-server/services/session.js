@@ -1,4 +1,5 @@
 var cardDistService = require("./cardDistService.js");
+var cardDrawService = require("./cardDrawService.js");
 var Player = require("./player.js");
 
 /**
@@ -25,5 +26,10 @@ module.exports = class Session {
     this.players = assignments.players;
     this.table = assignments.table;
     this.deck = assignments.deck;
+  }
+
+  drawCards(playerId, numOfCards) {
+    let player = this.players.find(p => p.playerId === playerId);
+    return cardDrawService.drawCards(this.deck, numOfCards, player);
   }
 };
