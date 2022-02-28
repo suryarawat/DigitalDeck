@@ -6,8 +6,8 @@ const Player = require('../models/player');
 const Table = require('../models/table');
 
 beforeAll(() => {
-    var player = new Player([]);
-    var table = new Table([]);
+    var player = new Player( [ 12, 13, 14, 15]);
+    var table = new Table([1, 2, 3, 4, 5, 6, 7]);
 
     var session = {
         "numDecks" : 1,

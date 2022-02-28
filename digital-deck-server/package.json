@@ -2,9 +2,9 @@
   "name": "digital-deck-server",
   "version": "1.0.0",
   "description": "Backend implementation for digital deck application",
-  "main": "api/controller.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "socket",
     "based"
   ],
-  "author": "Surya R.",
+  "author": "empty",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/suryarawat/DigitalDeck/issues"
@@ -24,6 +24,7 @@
   "dependencies": {
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "supertest": "^6.2.2"
   }
 }
