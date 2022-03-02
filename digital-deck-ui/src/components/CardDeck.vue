@@ -19,13 +19,13 @@ export default {
         deckImage() {
             let numCards = this.$store.getters.getNumCardsInDeck;
 
-            if (numCards >= 26) return CardDeckImageEnum.FULL;
-            else if (numCards > 5) return CardDeckImageEnum.HALF;
-            else if (numCards === 5) return CardDeckImageEnum.FIVE;
-            else if (numCards === 4) return CardDeckImageEnum.FOUR;
-            else if (numCards === 3) return CardDeckImageEnum.THREE;
-            else if (numCards === 2) return CardDeckImageEnum.TWO;
-            else return CardDeckImageEnum.ONE;
+            if (numCards >= 26) return CardDeckImageEnum.BACK.FULL;
+            else if (numCards > 5) return CardDeckImageEnum.BACK.HALF;
+            else if (numCards === 5) return CardDeckImageEnum.BACK.FIVE;
+            else if (numCards === 4) return CardDeckImageEnum.BACK.FOUR;
+            else if (numCards === 3) return CardDeckImageEnum.BACK.THREE;
+            else if (numCards === 2) return CardDeckImageEnum.BACK.TWO;
+            else return CardDeckImageEnum.BACK.ONE;
         }
     },
     methods: {
