@@ -31,15 +31,21 @@ export default createStore({
 
         setCardsInDeck(state, deck) {
             state.numCardsInDeck = deck.length;
+        },
+
+        flipCard(state, card) {
+            var index = state.tableCards.indexOf(card);
+            state.tableCards[index] = -1*state.tableCards[index];
         }
+        
     },
     actions: {
         initSession({ commit, state }) {
             return axios.post(URL + '/session/new', {
                 decks: 1,
                 players: 1,
-                cardsPerPlayer: 1,
-                cardsOnTable: 0
+                cardsPerPlayer: 3,
+                cardsOnTable: 10
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);
@@ -74,6 +80,10 @@ export default createStore({
 
         getNumCardsInDeck(state) {
             return state.numCardsInDeck;
+        },
+
+        getTableCards(state) {
+            return state.tableCards;
         }
     }
 });
