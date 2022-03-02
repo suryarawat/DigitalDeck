@@ -27,26 +27,74 @@ beforeAll(() => {
  * Testing play card enpoint
  */
  describe('POST /player/playcard', function () {
-     const body1 = {
-         "sessionId": 0,
-         "playerId" : 0,
-         "cardIndex": 1,
-         "card" : 13
-     };
 
-     const body2 = {
-        "sessionId": 0,
-        "playerId" : 0,
-        "cardIndex": 2,
-        "card" : 14
-    };
-    it('respond with 200 ok ', async function () {
-        const res = await request.post('/player/playcard/').send(body1);
+    it('Should respond with 200 ok ', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 0,
+            "cardIndex": 1,
+            "card" : 13
+        };
+
+        const res = await request.post('/player/playcard/').send(body);
         expect(res.status).toBe(200);
+        expect(res.body.players[0].cards).toStrictEqual([12, 14, 15]);
+        expect(res.body.table.cards).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 13]);
     });
 
-    it('respond with 200 ok ', async function () {
-        const res = await request.post('/player/playcard/').send(body2);
-        expect(res.status).toBe(200);
+    it('Invalid request. Not a number is entered.', async function () {
+        const body = {
+            "sessionId": "zero",
+            "playerId" : 0,
+            "cardIndex": 1,
+            "card" : 13
+        };
+        const res = await request.post('/player/playcard/').send(body);
+        expect(res.status).toBe(400);
+    });
+
+    it('Invalid request. Out of bound cards are entered', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 0,
+            "cardIndex": -1,
+            "card" : 67
+        };
+        const res = await request.post('/player/playcard/').send(body);
+        expect(res.status).toBe(400);
+    });
+
+    it('Invalid request. Non-existent session is enetered.', async function () {
+        const body = {
+            "sessionId": 10,
+            "playerId" : 0,
+            "cardIndex": 1,
+            "card" : 13
+        };
+        const res = await request.post('/player/playcard/').send(body);
+        expect(res.status).toBe(400);
+    });
+
+    it('Invalid request. Non-existent player is enetered.', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 10,
+            "cardIndex": 1,
+            "card" : 13
+        };
+        const res = await request.post('/player/playcard/').send(body);
+        expect(res.status).toBe(400);
+    });
+
+    // should not be required as the request should only send the card, and not the index.
+    it('Invalid request. Out of bound cardIndex is entered.', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 0,
+            "cardIndex": 12,
+            "card" : 13
+        };
+        const res = await request.post('/player/playcard/').send(body);
+        expect(res.status).toBe(400);
     });
 });
