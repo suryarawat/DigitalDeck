@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { getPlayer, getSession } = require('../services/utilities');
 const cardDrawService = require('../services/cardDrawService');
-const cardShuffleService = require('../services/cardShuffleService');
 
 router.post('/playcard', async function (req, res) {
   var sessionId = req.body.sessionId;
@@ -41,28 +40,5 @@ router.post('/drawcard', async function (req, res) {
     }
   }
 });
-
-router.post('/shufflecards', async function (req, res) {
-  let sessionId = Number(req.body.sessionId);
-  if (isNaN(sessionId)) {
-    res.status(400).send('Invalid call. Needs sessionId as number in the query.');
-  } else {
-    let currSession = getSession(sessionId);
-    let deck = currSession.deck;
-    if (!currSession) {
-      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
-    } else {
-      try {
-        const updated =  cardShuffleService.shuffleCards(deck);
-        currSession.updateDeck(updated);
-        res.status(200).send(updated);
-      }
-      catch (err){
-        console.log(err);
-      }
-    }
-  }
-});
-
 
 module.exports = router;
