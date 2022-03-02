@@ -26,7 +26,10 @@ module.exports = class Session {
     this.table = assignments.table;
     this.deck = assignments.deck;
   }
-
+  updateDeck(newDeck) {
+    this.deck = newDeck;
+    console.log(this.deck);
+  }
   // drawCards(playerId, numOfCards) {
   //   let player = this.players.find(p => p.playerId === playerId);
   //   return cardDrawService.drawCards(this.deck, numOfCards, player);
