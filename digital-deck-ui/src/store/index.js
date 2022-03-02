@@ -8,8 +8,8 @@ export default createStore({
     state: {
         sessionId: -1,
         playerId: -1,
-        playerCards: [],
-        tableCards: [],
+        playerCards: null,
+        tableCards: null,
         numCardsInDeck: -1
     },
     mutations: {
@@ -53,7 +53,6 @@ export default createStore({
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);
 
-                console.log(state.playerCards);
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },

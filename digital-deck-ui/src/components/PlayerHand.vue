@@ -1,10 +1,10 @@
 <template>
-  <div id="player-area">
+  <div>
     <div
       v-for="(card, index) in this.$store.getters.getPlayerCards"
       :key="card"
-      v-bind:id="'card' + index"
-      v-bind:style="
+      :id="'card' + index"
+      :style="
         'position: absolute; transform: translate(' +
         index * (getWindowWidth() / this.$store.getters.getPlayerCards.length) +
         'px' +

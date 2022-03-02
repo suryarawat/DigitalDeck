@@ -3,8 +3,8 @@
     <div
       v-for="(card, index) in this.$store.getters.getTableCards"
       :key="card"
-      v-bind:id="'tablecard' + index"
-      v-bind:style="
+      :id="'tablecard' + index"
+      :style="
         'position: absolute; transform: translate(' +
         index * (getWindowWidth() / this.$store.getters.getTableCards.length) +
         'px' +
