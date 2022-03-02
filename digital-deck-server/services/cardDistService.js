@@ -1,5 +1,5 @@
-var Player = require("../services/player.js");
-var Table = require("../services/table.js");
+var Player = require('../models/player');
+var Table = require('../models/table');
 var cardShuffleService = require("./cardShuffleService.js");
 
 
