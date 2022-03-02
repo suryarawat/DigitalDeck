@@ -26,9 +26,9 @@ module.exports = class Session {
     this.table = assignments.table;
     this.deck = assignments.deck;
   }
+  // updates Deck when shuffleCard Service is called
   updateDeck(newDeck) {
     this.deck = newDeck;
-    console.log(this.deck);
   }
   // drawCards(playerId, numOfCards) {
   //   let player = this.players.find(p => p.playerId === playerId);

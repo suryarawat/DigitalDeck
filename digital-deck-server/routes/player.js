@@ -45,11 +45,10 @@ router.post('/drawcard', async function (req, res) {
 router.post('/shufflecards', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
   if (isNaN(sessionId)) {
-    res.status(400).send('Invalid call. Needs sessionId, playerId, and numOfCards as numbers in the query.');
+    res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
     let currSession = getSession(sessionId);
     let deck = currSession.deck;
-    console.log(deck);
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
