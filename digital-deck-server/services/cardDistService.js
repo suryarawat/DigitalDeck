@@ -1,5 +1,7 @@
 var Player = require('../models/player');
 var Table = require('../models/table');
+var cardShuffleService = require("./cardShuffleService.js");
+
 
 module.exports = {
   /**
@@ -40,7 +42,7 @@ module.exports = {
 };
 
 /**
- * Temporary method to create stub cards deck
+ * Temporary method to create stub cards deck & Shuffling them
  *
  * @param decks The number of decks to be used in the game session.
  * @return {Array} Array containg cards based on how many deck, currently no shuffling here.
@@ -53,5 +55,5 @@ function getCards(decks) {
       cards.push(i);
     }
   }
-  return cards;
+ return cardShuffleService.shuffleCards(cards);
 }
