@@ -26,5 +26,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.3",
     "supertest": "^6.2.2"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }

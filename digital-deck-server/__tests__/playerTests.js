@@ -6,8 +6,8 @@ const Player = require('../models/player');
 const Table = require('../models/table');
 
 beforeAll(() => {
-    var player = new Player( [ 12, 13, 14, 15]);
-    var table = new Table([1, 2, 3, 4, 5, 6, 7]);
+    var player = new Player([]);
+    var table = new Table([]);
 
     var session = {
         "numDecks" : 1,
@@ -29,7 +29,7 @@ beforeAll(() => {
 
 describe('POST /player/drawcard', function () {
     // Valid request
-    it('respond with 200 ok ', async function () {
+    it('Typical Valid request. Respond with 200', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
@@ -40,7 +40,7 @@ describe('POST /player/drawcard', function () {
     });
 
     // Valid request. Draw max number of cards
-    it('respond with 200 ok ', async function () {
+    it('Draw max number of cards. Respond with 200', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
@@ -51,7 +51,7 @@ describe('POST /player/drawcard', function () {
     });
 
     // Invalid request. Session Id not exist
-    it('respond with 400 ok ', async function () {
+    it('Session Id not exist. Respond with 400', async function () {
         const body = {
             "sessionId": 1,
             "playerId" : 0,
@@ -61,8 +61,30 @@ describe('POST /player/drawcard', function () {
         expect(res.status).toBe(400);
     });
 
+    // Invalid request. Player Id not exist
+    it('Player Id not exist. Respond with 400', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 1,
+            "numOfCards": 0
+        };
+        const res = await request.post('/player/drawcard').send(body);
+        expect(res.status).toBe(400);
+    });
+
+    // Invalid request. Invalid numOfCards
+    it('Invalid numOfCards. Respond with 400', async function () {
+        const body = {
+            "sessionId": 0,
+            "playerId" : 0,
+            "numOfCards": -1
+        };
+        const res = await request.post('/player/drawcard').send(body);
+        expect(res.status).toBe(400);
+    });
+
     // Invalid request. Draw more than number of available cards in deck
-    it('respond with 400 ok ', async function () {
+    it('Draw more than available cards in deck. Respond with 400', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
@@ -73,7 +95,7 @@ describe('POST /player/drawcard', function () {
     });
 
     // Invalid request. Missing sessionId
-    it('respond with 400 ok ', async function () {
+    it('Missing sessionId. Respond with 400', async function () {
         const body = {
             "playerId" : 0,
             "numOfCards": 0
@@ -83,7 +105,7 @@ describe('POST /player/drawcard', function () {
     });
 
     // Invalid request. Missing playerId
-    it('respond with 400 ok ', async function () {
+    it('Missing playerId. Respond with 400', async function () {
         const body = {
             "sessionId" : 0,
             "numOfCards": 0
@@ -93,7 +115,7 @@ describe('POST /player/drawcard', function () {
     });
 
     // Invalid request. Missing numOfCards
-    it('respond with 400 ok ', async function () {
+    it('Missing numOfCards. Respond with 400', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0
