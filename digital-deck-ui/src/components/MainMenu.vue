@@ -20,12 +20,16 @@
 <script>
 import Game from "./Game.vue";
 import useVuelidate from "@vuelidate/core";
-import { required, between } from "@vuelidate/validators";
+import { between } from "@vuelidate/validators";
+import { VueCookies } from "vue-cookies";
 
 export default {
   name: "menu",
   setup() {
-    return { v$: useVuelidate() };
+    return {
+        v$: useVuelidate(),
+        //cookies$: VueCookies()
+    };
   },
   data: () => {
     return {
@@ -39,7 +43,11 @@ export default {
   components: {
     Game,
   },
-  created() {},
+  created() {
+      let currId = $cookies.get('SessionId');
+      if (currId != null && currId != -1){console.log('restore session');}
+      else{$cookies.set('SessionId', -1, '1h');}  //return this
+  },
   validations() {
     return {
       deckSelected: {
