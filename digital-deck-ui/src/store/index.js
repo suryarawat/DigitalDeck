@@ -40,12 +40,12 @@ export default createStore({
         
     },
     actions: {
-        initSession({ commit, state }) {
+        initSession({ commit, state }, sessionData) {
             return axios.post(URL + '/session/new', {
-                decks: 1,
+                decks: sessionData.decks,
                 players: 1,
-                cardsPerPlayer: 3,
-                cardsOnTable: 10
+                cardsPerPlayer: sessionData.cardsPerPlayer,
+                cardsOnTable: sessionData.cardsOnTable
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);

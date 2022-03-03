@@ -10,7 +10,7 @@ import HandArea from './HandArea.vue';
 import TableArea from './TableArea.vue';
 
 export default {
-    name: 'Game',
+    name: 'game',
     components: {
         HandArea,
         TableArea
