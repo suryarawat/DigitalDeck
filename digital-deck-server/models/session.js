@@ -26,4 +26,8 @@ module.exports = class Session {
     this.table = assignments.table;
     this.deck = assignments.deck;
   }
+  // updates Deck when shuffleCard Service is called
+  updateDeck(newDeck) {
+    this.deck = newDeck;
+  }
 };
