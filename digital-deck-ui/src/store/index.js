@@ -35,10 +35,10 @@ export default createStore({
 
         flipCard(state, card) {
             var index = state.tableCards.indexOf(card);
-            state.tableCards[index] = -1*state.tableCards[index];
+            state.tableCards[index] = -1 * state.tableCards[index];
         }
 
-        
+
     },
     actions: {
         initSession({ commit, state }) {
@@ -74,8 +74,17 @@ export default createStore({
             }).catch((err) => console.log(err));
         },
 
-        playCards({ commit, state }, payload ) {
-            console.log(payload.card);
+        playCards({ commit, state }, payload) {
+            axios.post(URL + '/player/playcard', {
+                sessionId: state.sessionId,
+                playerId: state.playerId,
+                cardIndex: payload.index,
+                card: payload.card,
+            }).then((res) => {
+                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setTableCards', res.data.table);
+            }).catch((err) => console.log(err));
+
         }
     },
     getters: {
