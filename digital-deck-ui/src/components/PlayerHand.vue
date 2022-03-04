@@ -4,7 +4,7 @@
       v-for="(card, index) in this.$store.getters.getPlayerCards"
       :key="card"
       :id="'card' + index"
-      @click="playCard(card)"
+      @click="playCard(card,index)"
       :style="
         'position: absolute; transform: translate(' +
         index * (getWindowWidth() / this.$store.getters.getPlayerCards.length) +
@@ -30,9 +30,10 @@ export default {
         : CardDeckImageEnum.BACK.ONE;
     },
     
-    playCard(card) {
+    playCard(card,index) {
       this.$store.dispatch('playCards',{
-        card : card
+        card : card,
+        index : index
       });
     },
 
