@@ -1,17 +1,17 @@
 <template>
-    <MainMenu/>
+  <main-menu />
 </template>
 
 <script>
-import MainMenu from './components/MainMenu.vue';
+import MainMenu from "./components/MainMenu.vue";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-      MainMenu
-  }
-}
+    MainMenu,
+  },
+};
 </script>
 
 <style>
-@import './assets/base.css';
+@import "./assets/base.css";
 </style>
