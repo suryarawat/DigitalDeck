@@ -37,6 +37,7 @@ export default createStore({
             var index = state.tableCards.indexOf(card);
             state.tableCards[index] = -1*state.tableCards[index];
         }
+
         
     },
     actions: {
@@ -71,6 +72,10 @@ export default createStore({
 
                 UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
             }).catch((err) => console.log(err));
+        },
+
+        playCards({ commit, state }, payload ) {
+            console.log(payload.card);
         }
     },
     getters: {
