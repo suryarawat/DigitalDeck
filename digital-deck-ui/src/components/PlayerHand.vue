@@ -2,6 +2,7 @@
   <div>
     <div
       v-for="(card, index) in this.$store.getters.getPlayerCards"
+      class="player-hand"
       :key="card"
       :id="'card' + index"
       @click="playCard(card,index)"
@@ -43,3 +44,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.player-hand {
+    cursor: pointer;
+}
+</style>
