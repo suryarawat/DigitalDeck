@@ -2,13 +2,7 @@
   <div
     v-if="$store.getters.getNumCardsInDeck > 0"
     class="card-deck"
-    :style="
-      'background-image: url(\'' +
-      deckImage +
-      '\'); width: 144px; transform: translate(' +
-      getPosition() +
-      'px, 0px);'
-    "
+    :style="'background-image: url(\'' + deckImage + '\');'"
     @click="drawCard"
   />
 </template>
@@ -56,6 +50,5 @@ export default {
   background-size: contain;
   background-position: center;
   cursor: pointer;
-  /* position: absolute; */
 }
 </style>

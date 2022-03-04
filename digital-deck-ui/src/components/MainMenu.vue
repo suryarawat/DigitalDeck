@@ -4,11 +4,11 @@
       <h1>Digital Deck</h1>
       <br />
       <span>Decks</span><br />
-      <input v-model.number="deckSelected" type="number" /><br />
+      <input v-model.number="deckSelected" type="number" min="1" oninput="validity.valid||(value='');"/><br />
       <span>Cards on hand</span><br />
-      <input v-model.number="cardsPerPlayer" type="number" /><br />
+      <input v-model.number="cardsPerPlayer" type="number"  min="1" oninput="validity.valid||(value='');"/><br />
       <span>Cards on table</span><br />
-      <input v-model.number="cardsOnTable" type="number" /><br /><br />
+      <input v-model.number="cardsOnTable" type="number"  min="0" oninput="validity.valid||(value='');"/><br /><br />
       <button @click="submitForm" style="cursor: pointer;">Start</button>
       <p v-for="error of v$.$errors" :key="error.$uid">
         <strong>{{ error.$message }}</strong>

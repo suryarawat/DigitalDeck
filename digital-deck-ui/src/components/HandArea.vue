@@ -21,7 +21,7 @@ export default {
 <style scoped>
 .hand-area {
   display: grid;
-  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-columns:9fr 1fr;
   height: 100%;
 }
 </style>
