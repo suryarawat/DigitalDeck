@@ -6,7 +6,8 @@ export default {
         FOUR: 'https://i.imgur.com/tPJcCL9.png',
         THREE: 'https://i.imgur.com/83dtG4X.png',
         TWO: 'https://i.imgur.com/zIQRKqa.png',
-        ONE: 'https://i.imgur.com/TZJdpPC.png'
+        ONE: 'https://i.imgur.com/TZJdpPC.png',
+        DEFAULT: 'https://i.imgur.com/RO3DOEa.jpg'
     },
     FRONT: [
         'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Minicard_AS.svg/155px-Minicard_AS.svg.png',

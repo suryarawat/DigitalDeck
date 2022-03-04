@@ -26,7 +26,7 @@ export default {
     cardImage(card) {
       return card > 0
         ? CardDeckImageEnum.FRONT[card - 1]
-        : CardDeckImageEnum.BACK.ONE;
+        : CardDeckImageEnum.BACK.DEFAULT;
     },
 
     flipCard(card) {
