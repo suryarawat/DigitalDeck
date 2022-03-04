@@ -22,13 +22,14 @@
       </p>
     </div>
     <game v-if="isLoaded" />
+    <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
 
 <script>
 import Game from "./Game.vue";
 import useVuelidate from "@vuelidate/core";
-import { between } from "@vuelidate/validators";
+import { between, requiredUnless } from "@vuelidate/validators";
 import { VueCookies } from "vue-cookies";
 
 export default {
@@ -41,10 +42,9 @@ export default {
   data: () => {
     return {
       isLoaded: false,
-      deckSelected: 1,
-      cardsPerPlayer: 0,
-      cardsOnTable: 0,
-      possibleDecks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      deckSelected: '',
+      cardsPerPlayer: '',
+      cardsOnTable: '',
     };
   },
   components: {
@@ -53,8 +53,13 @@ export default {
   created() {
     let currId = $cookies.get("SessionId");
     if (currId != null && currId != -1) {
-      console.log("restore session");
-      //this.isLoaded = true;
+      this.$store
+        .dispatch("retrieveSession", {
+          sessionId: currId,
+        })
+        .finally(() => {
+          this.isLoaded = true;
+        });
     } else {
       $cookies.set("SessionId", -1, "1h");
     }
@@ -65,18 +70,17 @@ export default {
         between: between(1, 10),
       },
       cardsPerPlayer: {
+        requiredIfFunction: requiredUnless(() => {return this.deckSelected > 10 || this.deckSelected < 0;}),
         between: between(1, 52 * this.deckSelected),
       },
       cardsOnTable: {
+        requiredIfFunction: requiredUnless(() => {return this.cardsPerPlayer != null && (this.cardsPerPlayer > 52*this.deckSelected || this.cardsPerPlayer < 0);}),
         between: between(0, 52 * this.deckSelected - this.cardsPerPlayer),
       },
     };
   },
   methods: {
     async submitForm() {
-      console.log(this.cardsOnTable);
-      console.log(this.cardsPerPlayer);
-      console.log(this.deckSelected);
       const isFormCorrect = await this.v$.$validate();
       if (!isFormCorrect) {
         return;
@@ -92,6 +96,11 @@ export default {
           });
       }
     },
+
+    closeSession() {
+      $cookies.set("SessionId", -1, "1h");
+      this.isLoaded = false;
+    },
   },
 };
 </script>
@@ -102,5 +111,19 @@ export default {
   padding: 10% 5% 0;
   text-align: center;
   align-items: center;
+}
+
+.exit-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  color: blanchedalmond;
+  font-size: 30px;
 }
 </style>

@@ -57,6 +57,20 @@ export default createStore({
             }).catch((err) => console.log(err));
         },
 
+        retrieveSession({ commit, state }, id) {
+            return axios.get(URL + '/session/current', {
+                params: { sessionId: id.sessionId}
+            }).then((res) => {
+                commit('setSessionId', res.data.sessionId);
+                commit('setPlayerId', res.data.players[0].playerId);
+                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setTableCards', res.data.table);
+                commit('setCardsInDeck', res.data.deck);
+                $cookies.set('SessionId', res.data.sessionId, '1h');
+                UnitTests.testInitSession(state);
+            }).catch((err) => console.log(err));
+        },
+
         drawCards({ commit, state }) {
             let oldPlayerCards = state.playerCards;
             let oldCardsInDeck = state.numCardsInDeck;

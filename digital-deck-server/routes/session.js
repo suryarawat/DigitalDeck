@@ -32,6 +32,23 @@ router.get('/info', async function(req, res) {
     res.status(200).json(getConcSessions());
 });
 
+// Get session based on id
+router.get('/current', async function(req, res) {
+  // process request
+  var sessionId = Number(req.query.sessionId);
+  if (isNaN(sessionId)) {
+    throw new Error(
+      "Invalid call, needs a valid session id."
+    );
+  }
+  let session = getSession(sessionId);
+  if (!session) {
+    res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+  }
+  else{
+  res.status(200).json(session);}
+});
+
 //shuffle cards during a session
 router.post('/shufflecards', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
