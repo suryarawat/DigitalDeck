@@ -9,7 +9,7 @@
       <input v-model.number="cardsPerPlayer" type="number" /><br />
       <span>Cards on table</span><br />
       <input v-model.number="cardsOnTable" type="number" /><br /><br />
-      <button @click="submitForm">Start</button>
+      <button @click="submitForm" style="cursor: pointer;">Start</button>
       <p v-for="error of v$.$errors" :key="error.$uid">
         <strong>{{ error.$message }}</strong>
         <span v-if="error.$property === 'cardsPerPlayer'"
@@ -67,6 +67,7 @@ export default {
   validations() {
     return {
       deckSelected: {
+        requiredIfFunction: requiredUnless(() => {return this.deckSelected == null;}),
         between: between(1, 10),
       },
       cardsPerPlayer: {
