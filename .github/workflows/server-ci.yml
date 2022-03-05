@@ -12,11 +12,7 @@ on:
     - dev
 
 jobs:
-  build:
-    defaults:
-      run:
-        shell: bash
-        working-directory: digital-deck-server
+  build:        
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,10 +22,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run test --if-present
-    - run: node index.js
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: ${{ matrix.node-version }}
+#         cache: 'npm'
+      working-directory: digital-deck-server
+      run: |
+        npm ci
+        npm run test --if-present
+        node index.js
