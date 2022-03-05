@@ -1,5 +1,5 @@
 # This is extended on the template provided in https://github.com/actions/starter-workflows/blob/main/ci/node.js.yml
-name: CI actions
+name: CI Server Actions
 
 on:
   push:
