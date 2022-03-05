@@ -6,10 +6,12 @@ on:
     branches: 
     - miain
     - dev
+    - 'CI-CD'
   pull_request:
     branches: 
     - miain
     - dev
+    - 'CI-CD'
 
 jobs:
   build:
