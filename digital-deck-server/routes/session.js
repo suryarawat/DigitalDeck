@@ -15,16 +15,22 @@ router.post('/new', async function (req, res) {
       isNaN(decks) ||
       isNaN(players) ||
       isNaN(cardsPerPlayer) ||
-      isNaN(cardsOnTable)
+      isNaN(cardsOnTable) ||
+      decks <= 0 ||
+      players <= 0 ||
+      cardsPerPlayer < 0 ||
+      cardsOnTable < 0
     ) {
-      throw new Error(
-        "Invalid call, needs decks, player, cardsPerPlayer and cardsOnTable as numbers in the query."
-      );
+        res.status(400).send('Invalid request. Needs decks, players, cardsPerPlayer, and cardsOnTable as positive numbers.');
+    } else {
+      if (cardsPerPlayer * players + cardsOnTable > 52 * decks) {
+        res.status(400).send('Invalid request. Cannot distribute more than number of available cards');
+      } else {
+        currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
+        addSession(currSession);
+        res.status(200).send(currSession);
+      }
     }
-  
-    currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
-    addSession(currSession);
-    res.send(currSession);
 });
 
 // for test
@@ -37,16 +43,15 @@ router.get('/current', async function(req, res) {
   // process request
   var sessionId = Number(req.query.sessionId);
   if (isNaN(sessionId)) {
-    throw new Error(
-      "Invalid call, needs a valid session id."
-    );
+    res.status(400).send('Invalid call, needs a valid session id.');
+  } else {
+    let session = getSession(sessionId);
+    if (!session) {
+      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+    } else {
+      res.status(200).json(session);
+    }
   }
-  let session = getSession(sessionId);
-  if (!session) {
-    res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
-  }
-  else{
-  res.status(200).json(session);}
 });
 
 //shuffle cards during a session
@@ -56,13 +61,13 @@ router.post('/shufflecards', async function (req, res) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
     let currSession = getSession(sessionId);
-    let deck = currSession.deck;
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
       try {
+        let deck = currSession.deck;
         const updated =  cardShuffleService.shuffleCards(deck);
-        currSession.updateDeck(updated);
+        currSession.deck = updated;
         res.status(200).send(updated);
       }
       catch (err){
@@ -71,6 +76,5 @@ router.post('/shufflecards', async function (req, res) {
     }
   }
 });
-
 
 module.exports = router;
