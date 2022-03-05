@@ -4,3 +4,5 @@ digital-deck-server/node_modules/
 digital-deck-ui/package-lock.json
 
 digital-deck-server/package-lock.json
+
+digital-deck-server/.vscode/
