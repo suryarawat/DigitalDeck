@@ -41,19 +41,33 @@ export default createStore({
 
     },
     actions: {
-        initSession({ commit, state }) {
+        initSession({ commit, state }, sessionData) {
             return axios.post(URL + '/session/new', {
-                decks: 1,
+                decks: sessionData.decks,
                 players: 1,
-                cardsPerPlayer: 3,
-                cardsOnTable: 10
+                cardsPerPlayer: sessionData.cardsPerPlayer,
+                cardsOnTable: sessionData.cardsOnTable
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);
                 commit('setPlayerCards', res.data.players[0].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);
+                $cookies.set('SessionId', res.data.sessionId, '1h');
+                UnitTests.testInitSession(state);
+            }).catch((err) => console.log(err));
+        },
 
+        retrieveSession({ commit, state }, id) {
+            return axios.get(URL + '/session/current', {
+                params: { sessionId: id.sessionId}
+            }).then((res) => {
+                commit('setSessionId', res.data.sessionId);
+                commit('setPlayerId', res.data.players[0].playerId);
+                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setTableCards', res.data.table);
+                commit('setCardsInDeck', res.data.deck);
+                $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },

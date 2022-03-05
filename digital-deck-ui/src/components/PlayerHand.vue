@@ -39,7 +39,7 @@ export default {
     },
 
     getWindowWidth() {
-      return 1355;
+      return window.innerWidth*.7;
     },
   },
 };
