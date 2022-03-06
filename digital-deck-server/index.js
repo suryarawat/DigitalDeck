@@ -1,15 +1,21 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const bodyParser = require('body-parser');
+const cors = require("cors");
+const sessionRoute = require('./routes/session') 
+const playerRoute = require('./routes/player') 
 
 const app = express();
 const port = 5000;
 
 app.use(cors());
+app.use(bodyParser.json());
 
-app.get('/newquery', function (req, res) {
-    res.send('GET request to homepage')
-})
+app.use('/session', sessionRoute);
+app.use('/player', playerRoute);
 
-app.listen(port, () => {
-    console.log(`Now listening on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port);
+}
+console.log("Now listening on port " + port);
+
+module.exports = { app };
