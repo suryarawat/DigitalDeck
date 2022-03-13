@@ -1,3 +1,5 @@
+const Session = require('../models/session');
+
 let concSessions = [];
 
 /**
@@ -8,6 +10,15 @@ let concSessions = [];
 function getConcSessions()
 {
     return concSessions;
+}
+
+/**
+ * Clear all the sessions. Used for testing
+ */
+function clearConcSessions()
+{
+    concSessions = [];
+    Session.id = 0;
 }
 
 /**
@@ -41,4 +52,4 @@ function getPlayer(session, id)
     return session.players.find(player => player.playerId === id);
 }
 
-module.exports = {getConcSessions, addSession, getSession, getPlayer};
+module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer};
