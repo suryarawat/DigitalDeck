@@ -6,6 +6,11 @@
 import MainMenu from "./components/MainMenu.vue";
 import io from "socket.io-client";
 
+export let api_url =  "http://localhost:5000";
+if ( process.env.NODE_ENV === 'production'){
+    api_url = 'http://34.68.11.124:5000';
+}
+
 export default {
   name: "app",
   components: {
@@ -17,7 +22,7 @@ export default {
     };
   },
   created() {
-    this.socket = io("http://localhost:5000");
+    this.socket = io(api_url);
   },
   mounted() {
     this.socket.on("hello-world", () => {

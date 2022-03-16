@@ -1,8 +1,7 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 import UnitTests from './../scripts/UnitTests.js';
-
-const URL = 'http://localhost:5000';
+import { api_url } from "./../App.vue";
 
 export default createStore({
     state: {
@@ -42,7 +41,7 @@ export default createStore({
     },
     actions: {
         initSession({ commit, state }, sessionData) {
-            return axios.post(URL + '/session/new', {
+            return axios.post(api_url + '/session/new', {
                 decks: sessionData.decks,
                 players: 1,
                 cardsPerPlayer: sessionData.cardsPerPlayer,
@@ -59,7 +58,7 @@ export default createStore({
         },
 
         retrieveSession({ commit, state }, id) {
-            return axios.get(URL + '/session/current', {
+            return axios.get(api_url + '/session/current', {
                 params: { sessionId: id.sessionId}
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
@@ -76,7 +75,7 @@ export default createStore({
             let oldPlayerCards = state.playerCards;
             let oldCardsInDeck = state.numCardsInDeck;
 
-            axios.post(URL + '/player/drawcard', {
+            axios.post(api_url + '/player/drawcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 numOfCards: 1
@@ -89,7 +88,7 @@ export default createStore({
         },
 
         playCards({ commit, state }, payload) {
-            axios.post(URL + '/player/playcard', {
+            axios.post(api_url + '/player/playcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 cardIndex: payload.index,
