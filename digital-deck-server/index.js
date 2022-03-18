@@ -6,11 +6,18 @@ const { Server } = require('socket.io');
 const sessionRoute = require('./routes/session');
 const playerRoute = require('./routes/player');
 
+var client_url = "http://localhost:3000";
+
+if (process.argv.slice(2)[0] === 'build') {
+  client_url = "http://34.68.43.140:8080";
+  console.log(client_url);
+}
+
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000"
+    origin: client_url
   }
 });
 const port = 5000;

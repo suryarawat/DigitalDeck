@@ -4,7 +4,9 @@
   "description": "Backend implementation for digital deck application",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "node index.js build",
+    "dev": "node index.js dev"
   },
   "repository": {
     "type": "git",
