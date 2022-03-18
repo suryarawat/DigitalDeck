@@ -1,0 +1,129 @@
+.main-menu {
+height: 100%;
+padding: 10% 5% 0;
+text-align: center;
+align-items: center;
+}
+
+.exit-button {
+position: absolute;
+top: 8px;
+right: 8px;
+background-color: transparent;
+background-repeat: no-repeat;
+border: none;
+cursor: pointer;
+overflow: hidden;
+outline: none;
+color: blanchedalmond;
+font-size: 30px;
+}
+
+.button {
+display: inline-block;
+padding: 15px 25px;
+margin: 10px;
+margin-top: 25px;
+font-size: 24px;
+cursor: pointer;
+text-align: center;
+text-decoration: none;
+outline: none;
+color: #fff;
+background-color: #31639c;
+border: none;
+border-radius: 15px;
+box-shadow: 0 9px #999;
+}
+
+.button:hover {background-color: #274f7d }
+
+.button:active {
+background-color: #274f7d ;
+box-shadow: 0 5px #666;
+transform: translateY(4px);
+}
+
+.heading {
+text-align: center;
+text-transform: uppercase;
+padding-bottom: 5px;
+}
+.heading:before {
+width: 28px;
+height: 5px;
+display: block;
+content: "";
+position: absolute;
+bottom: 3px;
+left: 50%;
+margin-left: -14px;
+background-color: #b80000;
+}
+.heading:after {
+width: 100px;
+height: 1px;
+display: block;
+content: "";
+position: relative;
+margin-top: 25px;
+left: 50%;
+margin-left: -50px;
+background-color: #b80000;
+}
+
+
+/*to hide arrows in number input*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+}
+
+
+
+.input-form {
+position: relative;
+top: 50%;
+left: 50%;
+width: 400px;
+padding: 40px;
+transform: translate(-50%, 10%);
+background: rgba(0,0,0,.5);
+box-sizing: border-box;
+box-shadow: 0 15px 25px rgba(0,0,0,.6);
+border-radius: 10px;
+}
+
+.input-form .number-box {
+position: relative;
+}
+
+.input-form .number-box input {
+width: 100%;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+margin-bottom: 30px;
+border: none;
+border-bottom: 1px solid #fff;
+outline: none;
+background: transparent;
+}
+.input-form .number-box label {
+position: absolute;
+top:0;
+left: 0;
+padding: 10px 0;
+font-size: 16px;
+color: #fff;
+pointer-events: none;
+transition: .5s;
+}
+
+.input-form .number-box input:focus ~ label,
+.input-form .number-box input:valid ~ label {
+top: -20px;
+left: 0;
+color: #03e9f4;
+font-size: 12px;
+}

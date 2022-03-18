@@ -10,7 +10,8 @@ export default createStore({
         playerId: -1,
         playerCards: null,
         tableCards: null,
-        numCardsInDeck: -1
+        numCardsInDeck: -1,
+        numPlayers: 0
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -33,6 +34,10 @@ export default createStore({
             state.numCardsInDeck = deck.length;
         },
 
+        setNumPlayers(state, numPlayers){
+            state.numPlayers = numPlayers;
+        },
+
         flipCard(state, card) {
             var index = state.tableCards.indexOf(card);
             state.tableCards[index] = -1 * state.tableCards[index];
@@ -53,6 +58,7 @@ export default createStore({
                 commit('setPlayerCards', res.data.players[0].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);
+                commit('setNumPlayers', res.data.numPlayers);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
@@ -67,6 +73,7 @@ export default createStore({
                 commit('setPlayerCards', res.data.players[0].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);
+                commit('setNumPlayers', res.data.numPlayers);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
@@ -112,6 +119,14 @@ export default createStore({
 
         getTableCards(state) {
             return state.tableCards;
+        },
+
+        getNumPlayers(state) {
+            return state.numPlayers;
+        },
+
+        getSessionId(state){
+            return state.sessionId;
         }
     }
 });
