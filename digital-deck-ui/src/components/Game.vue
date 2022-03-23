@@ -1,7 +1,7 @@
 <template>
     <div class="game">
         <h1 class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
-        <other-players />
+        <players-list />
         <table-area />
         <hand-area />
     </div>
@@ -10,14 +10,14 @@
 <script>
 import HandArea from './HandArea.vue';
 import TableArea from './TableArea.vue';
-import OtherPlayers from './OtherPlayers.vue';
+import PlayersList from './PlayersList.vue';
 
 export default {
     name: 'game',
     components: {
         HandArea,
         TableArea,
-        OtherPlayers
+        PlayersList
     }
 };
 </script>
