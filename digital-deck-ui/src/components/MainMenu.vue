@@ -2,10 +2,10 @@
   <div>
     <div v-if="!isLoaded" class="main-menu">
       <h1 class="heading">Digital Deck</h1>
-      <button class="button" v-on:click="toggleForm1()">Create</button>
-      <button class="button" v-on:click="toggleForm2()">Join</button>
+      <button class="button" v-on:click="toggleCreateForm()">Create</button>
+      <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
-      <div v-if="form1" class="input-form">
+      <div v-if="createForm" class="input-form">
         <form>
           <div class="number-box">
             <input
@@ -44,7 +44,7 @@
         </form>
       </div>
 
-      <div v-if="form2" class="input-form">
+      <div v-if="joinForm" class="input-form">
         <div class="number-box">
           <input type="number" required="" />
           <label>Enter ID</label>
@@ -63,13 +63,13 @@
         <span v-else><strong> for number of decks</strong></span>
       </p>
     </div>
-    <game v-if="isLoaded" />
+    <lobby v-if="isLoaded" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
 
 <script>
-import Game from "./Game.vue";
+import Lobby from "./Lobby.vue";
 import useVuelidate from "@vuelidate/core";
 import { between, requiredUnless } from "@vuelidate/validators";
 import { VueCookies } from "vue-cookies";
@@ -87,13 +87,12 @@ export default {
       deckSelected: "",
       cardsPerPlayer: "",
       cardsOnTable: "",
-      form1: false,
-      form2: false,
-      roomJoined: 0,
+      createForm: false,
+      joinForm: false,
     };
   },
   components: {
-    Game,
+    Lobby,
   },
   created() {
     let currId = $cookies.get("SessionId");
@@ -150,8 +149,8 @@ export default {
           .finally(() => {
             this.isLoaded = true;
           });
-      }
       this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+      }
     },
 
     closeSession() {
@@ -159,14 +158,14 @@ export default {
       this.isLoaded = false;
     },
 
-    toggleForm1() {
-      this.form1 = !this.form1;
-      this.form2 = false;
+    toggleCreateForm() {
+      this.createForm = !this.createForm;
+      this.joinForm = false;
     },
 
-    toggleForm2() {
-      this.form2 = !this.form2;
-      this.form1 = false;
+    toggleJoinForm() {
+      this.joinForm = !this.joinForm;
+      this.createForm = false;
     },
   },
 };
