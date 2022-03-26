@@ -8,7 +8,7 @@ import io from "socket.io-client";
 
 export let api_url =  "http://localhost:5000";
 if ( process.env.NODE_ENV === 'production'){
-    api_url = 'http://10.16.15.162';
+    api_url = 'http://34.132.36.123:5000';
 }
 
 export default {
