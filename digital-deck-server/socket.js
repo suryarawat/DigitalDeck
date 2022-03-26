@@ -17,7 +17,11 @@ function handleSocket(io)
             // console.log("current cards", cards);
             socket.to(sessionId).emit('cardDrawn', { deck: numCards, player: player });
         });
-      })
+
+        socket.on("playCard", ({ sessionId, cardsOnTable, player }) => {
+            socket.to(sessionId).emit("cardPlayed", { table: { cards: cardsOnTable }, player: player });
+        });
+    })
 }
 
 

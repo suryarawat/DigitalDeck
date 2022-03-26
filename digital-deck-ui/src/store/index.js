@@ -111,7 +111,7 @@ export default createStore({
         },
 
         playCards({ commit, state }, payload) {
-            axios.post(api_url + '/player/playcard', {
+            return axios.post(api_url + '/player/playcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 cardIndex: payload.index,
@@ -124,6 +124,10 @@ export default createStore({
         }
     },
     getters: {
+        getPlayerId(state) {
+          return state.playerId;
+        },
+
         getPlayerCards(state) {
             return state.playerCards;   // this will automatically track the changes of playerCards so you don't have to watch for it
         },
