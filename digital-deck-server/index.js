@@ -22,7 +22,7 @@ const io = new Server(httpServer, {
 });
 const port = 5000;
 
-io.on("hello-world", (socket) => {
+io.on("connection", (socket) => {
   socket.emit("hello-world");
 });
 
