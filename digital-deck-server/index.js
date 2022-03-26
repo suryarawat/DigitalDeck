@@ -22,10 +22,9 @@ const io = new Server(httpServer, {
 });
 const port = 5000;
 
-io.on("connection", (socket) => {
-  console.log("Connected");
+io.on("hello-world", (socket) => {
   socket.emit("hello-world");
-})
+});
 
 app.use(cors());
 app.use(bodyParser.json());
