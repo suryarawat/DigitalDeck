@@ -31,7 +31,7 @@ export default createStore({
         },
 
         setCardsInDeck(state, deck) {
-            state.numCardsInDeck = deck.length;
+            state.numCardsInDeck = deck;
         },
 
         flipCard(state, card) {
@@ -66,15 +66,15 @@ export default createStore({
                 commit('setPlayerId', res.data.players[0].playerId);
                 commit('setPlayerCards', res.data.players[0].cards);
                 commit('setTableCards', res.data.table);
-                commit('setCardsInDeck', res.data.deck);
+                commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[0].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-                return true;
+                // return true;
             }).catch((err) => {
                 console.log(err);
-                return false;
+                // return false;
             });
         },
 
@@ -86,7 +86,7 @@ export default createStore({
                 commit('setPlayerId', res.data.players[0].playerId);
                 commit('setPlayerCards', res.data.players[0].cards);
                 commit('setTableCards', res.data.table);
-                commit('setCardsInDeck', res.data.deck);
+                commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[0].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
@@ -102,13 +102,13 @@ export default createStore({
             let oldPlayerCards = state.playerCards;
             let oldCardsInDeck = state.numCardsInDeck;
 
-            axios.post(api_url + '/player/drawcard', {
+            return axios.post(api_url + '/player/drawcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 numOfCards: 1
             }).then((res) => {
                 commit('setPlayerCards', res.data.cards);
-                commit('setCardsInDeck', res.data.deck);
+                commit('setCardsInDeck', res.data.deck.length);
 
                 UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
             }).catch((err) => console.log(err));
