@@ -8,8 +8,8 @@ const playerRoute = require('./routes/player');
 
 var client_url = "http://localhost:3000";
 
-if (process.argv.slice(2)[0] === 'build') {
-  client_url = "http://34.68.43.140:8080";
+if (process.env.NODE_ENV == 'production') {
+  client_url = "http://35.192.81.46:3000";
   console.log(client_url);
 }
 
