@@ -4,9 +4,10 @@
  module.exports = class Player {
     // keep track of distinct players
     static players = 0;
-    constructor(cards) {
+    constructor(cards, name) {
       this.cards = cards;
       this.playerId = Player.players++;
+      this.name = name;
     }
   
     /**
@@ -85,6 +86,11 @@
         this.cards.splice(index, 1);
       }
       return cardToRemove;
+    }
+
+    setName(name)
+    {
+      this.name = name;
     }
   };
   
