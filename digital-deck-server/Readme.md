@@ -16,4 +16,4 @@ npm install
 npm run dev
 ```
 - Server is listening on port 5000
-- To test the queries run ```https://localhost:5000```
+- To test the queries run ```http://localhost:5000```
