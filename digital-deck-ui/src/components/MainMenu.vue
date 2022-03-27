@@ -22,7 +22,7 @@
             <input
               v-model.number="cardsPerPlayer"
               type="number"
-              min="1"
+              min="0"
               oninput="validity.valid||(value='');"
               required=""
             />
@@ -33,11 +33,19 @@
             <input
               v-model.number="cardsOnTable"
               type="number"
-              min="1"
+              min="0"
               oninput="validity.valid||(value='');"
               required=""
             />
             <label>Cards on table</label>
+          </div>
+
+          <div class="number-box">
+            <input v-model="name"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
           </div>
 
           <button class="button" @click="submitForm">Start</button>
@@ -89,6 +97,7 @@ export default {
       cardsOnTable: "",
       createForm: false,
       joinForm: false,
+      name: ""
     };
   },
   components: {
@@ -143,13 +152,15 @@ export default {
         this.$store
           .dispatch("initSession", {
             decks: this.deckSelected,
+            name: this.name,
             cardsPerPlayer: this.cardsPerPlayer,
             cardsOnTable: this.cardsOnTable,
           })
-          .finally(() => {
+          .then(() => {
+            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
             this.isLoaded = true;
           });
-      this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+
       }
     },
 

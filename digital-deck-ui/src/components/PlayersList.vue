@@ -2,11 +2,14 @@
   <div>
     <div class="container">
       <div
-        v-for="index in this.$store.getters.getNumPlayers - 1"
-        :key="index"
+        v-for="player in playersList"
+        :key="player"
         class="cards"
-        
       >
+      <div class="info">
+       {{player.name}} <br>
+       x {{player.numOfCards}} cards
+      </div>
       </div>
     </div>
   </div>
@@ -16,8 +19,13 @@
 import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
-  name: "other-players",
-
+  name: "players-list",
+  computed:{
+    // filters this player
+    playersList : function(){
+      return this.$store.getters.getPlayersInfo.filter(player => player.name != this.$store.getters.getName)
+    }
+  },
   methods: {
     cardImage() {
       CardDeckImageEnum.BACK.DEFAULT;
@@ -42,5 +50,14 @@ export default {
     background-size: contain;
     overflow: none;
     background-repeat: no-repeat;
+}
+
+.info{
+  width: 5em;
+  height: 10em;
+  margin :100%;
+  margin-top : 50%;
+  font-size: 120%;
+  font-weight: bold;
 }
 </style>
