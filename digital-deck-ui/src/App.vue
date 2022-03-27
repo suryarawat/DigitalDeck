@@ -22,7 +22,9 @@ export default {
     };
   },
   created() {
-    this.socket = io(api_url);
+    this.socket = io(api_url, {
+      transports: ["websocket"]
+    });
   },
   mounted() {
     this.socket.on("hello-world", () => {
