@@ -79,4 +79,26 @@ router.post('/shufflecards', async function (req, res) {
   }
 });
 
+router.post('/addnewplayer', async function (req, res) {
+  let sessionId = Number(req.body.sessionId);
+  if (isNaN(sessionId)) {
+    res.status(400).send('Invalid call. Needs sessionId as number in the query.');
+  } else {
+    let currSession = getSession(sessionId); // got the session
+    if (!currSession) {
+      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+    } else {
+      try {
+        let players = currSession.players;
+        var obj = { cards: [], playerId: players.length , name: 'player'+ players.length};
+        players.push(obj);
+        res.status(200).send(currSession);
+      }
+      catch (err){
+        console.log(err);
+      }
+    }
+  }
+});
+
 module.exports = router;

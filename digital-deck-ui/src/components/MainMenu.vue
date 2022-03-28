@@ -57,7 +57,7 @@
           <input type="number" required="" />
           <label>Enter ID</label>
         </div>
-        <button class="button">Join</button>
+        <button class="button"  @click="joinSessionForm">Join</button>
       </div>
 
       <p v-for="error of v$.$errors" :key="error.$uid">
@@ -163,6 +163,13 @@ export default {
 
       }
     },
+
+    async joinSessionForm() {
+    console.log("Works");
+    this.$socket.emit('joinRoom', this.$store.getters.getSessionId ); 
+    },
+
+
 
     closeSession() {
       $cookies.set("SessionId", -1, "1h");
