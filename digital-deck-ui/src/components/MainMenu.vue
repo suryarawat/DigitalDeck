@@ -54,9 +54,16 @@
 
       <div v-if="joinForm" class="input-form">
         <div class="number-box">
-          <input type="number" required="" />
+          <input v-model="id" type="number" required="" />
           <label>Enter ID</label>
         </div>
+        <div class="number-box">
+            <input v-model="name"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
+          </div>
         <button class="button"  @click="joinSessionForm">Join</button>
       </div>
 
@@ -97,7 +104,7 @@ export default {
       cardsOnTable: "",
       createForm: false,
       joinForm: false,
-      name: ""
+      name: ""//sess and playerid
     };
   },
   components: {
@@ -153,20 +160,30 @@ export default {
           .dispatch("initSession", {
             decks: this.deckSelected,
             name: this.name,
-            cardsPerPlayer: this.cardsPerPlayer,
-            cardsOnTable: this.cardsOnTable,
+            cardsPerPlayer: this.cardsPerPlayer, //cards on hand 
+            cardsOnTable: this.cardsOnTable, //cards on table
           })
           .then(() => {
-            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
-            this.isLoaded = true;
+             this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             this.isLoaded = true;
           });
 
       }
     },
 
     async joinSessionForm() {
-    console.log("Works");
-    this.$socket.emit('joinRoom', this.$store.getters.getSessionId ); 
+    this.$store
+          .dispatch("joinlobby", {
+            name: this.name,
+            sessionId: this.id
+          })
+          .then(() => {
+            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             this.isLoaded = true;
+          });
+
+  //post method of adding a new player then 
+    // this.$socket.emit('joinRoom', this.$store.getters.getSessionId ); 
     },
 
 

@@ -82,6 +82,7 @@ router.post('/shufflecards', async function (req, res) {
 
 router.post('/joinlobby', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
+  let playerName = req.body.name;
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
@@ -90,17 +91,20 @@ router.post('/joinlobby', async function (req, res) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
       try {
-        var playerID = -1;
+        let playerID = -1;
         let players = currSession.players;
+        let playerIndex = 0;
         for (var i=0 ; i<players.length; i++) {
           if (players[i].joined==false){
             players[i].joined = true;
+            players[i].name= playerName;
+            playerIndex=i;
             playerID = players[i].playerId;
             break;
           }
         }
           if (playerID!=-1){
-            var obj = { session : currSession, id : playerID  }
+            var obj = { session : currSession, id : playerID, index : i  }
             res.status(200).send(obj);
           }
           else {

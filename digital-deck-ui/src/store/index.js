@@ -12,7 +12,8 @@ export default createStore({
         tableCards: null,
         numCardsInDeck: -1,
         name: "",
-        playersInfo: [] //other players name and number of cards
+        playersInfo: [], //other players name and number of cards
+        currentIndex:0,
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -45,6 +46,7 @@ export default createStore({
         },
 
         setPlayersInfo(state, players){
+            state.playersInfo=[];
             for(var i = 0; i < players.length; i++)
             {
                 var obj = { name: players[i].name, numOfCards: players[i].cards.length, isJoined : players[i].joined};
@@ -53,6 +55,9 @@ export default createStore({
 
         },
 
+        setCurrentIndex(state, currentIndex){  
+            state.currentIndex = currentIndex;
+        },
     },
     actions: {
         initSession({ commit, state }, sessionData) {
@@ -80,11 +85,11 @@ export default createStore({
                 params: { sessionId: id.sessionId}
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
-                commit('setPlayerId', res.data.players[0].playerId);
-                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setPlayerId', res.data.players[this.state.currentIndex].playerId);
+                commit('setPlayerCards', res.data.players[this.state.currentIndex].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);
-                commit('setName', res.data.players[0].name);
+                commit('setName', res.data.players[this.state.currentIndex].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
@@ -120,15 +125,22 @@ export default createStore({
 
         },
 
-        joinRoom({ commit, state }, payload) {
-            axios.post(URL + '/player/playcard', {
-                sessionId: state.sessionId,
-                playerId: state.playerId,
-                cardIndex: payload.index,
-                card: payload.card,
+        joinlobby({ commit, state }, sessionData) {
+            axios.post(URL + '/session/joinlobby', {
+                sessionId: sessionData.sessionId,
+                name: sessionData.name,
             }).then((res) => {
-                commit('setPlayerCards', res.data.players[0].cards);
-                commit('setTableCards', res.data.table);
+                commit('setSessionId', res.data.session.sessionId);
+                commit('setPlayerId', res.data.id);
+                commit('setCurrentIndex', res.data.index);
+                commit('setPlayerCards', res.data.session.players[res.data.index].cards);
+                commit('setTableCards', res.data.session.table);
+                commit('setCardsInDeck', res.data.session.deck);
+                commit('setName', res.data.session.players[res.data.index].name);
+                commit('setPlayersInfo', res.data.session.players);
+                $cookies.set('SessionId', res.data.session.sessionId, '1h');
+
+                
             }).catch((err) => console.log(err));
 
         }
@@ -161,5 +173,7 @@ export default createStore({
         getPlayersInfo(state){
             return state.playersInfo;
         },
+
+        
     }
 });
