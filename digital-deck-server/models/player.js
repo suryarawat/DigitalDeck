@@ -8,6 +8,7 @@
       this.cards = cards;
       this.playerId = Player.players++;
       this.name = name;
+      this.joined=false;
     }
   
     /**

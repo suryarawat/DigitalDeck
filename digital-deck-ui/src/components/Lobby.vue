@@ -24,6 +24,9 @@
           <div class="names">
             {{ player.name }}
           </div>
+          <div class="names">
+            {{ 'is joined : ' + player.isJoined }}
+          </div>
         </div>
       </div>
     </div>
@@ -80,6 +83,6 @@ export default {
   transform: translate(140%, 100%);
   font-size: larger;
   font-weight: bold;
-  color: white;
+  color: grey;
 }
 </style>

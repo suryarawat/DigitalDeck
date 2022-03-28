@@ -47,7 +47,7 @@ export default createStore({
         setPlayersInfo(state, players){
             for(var i = 0; i < players.length; i++)
             {
-                var obj = { name: players[i].name, numOfCards: players[i].cards.length};
+                var obj = { name: players[i].name, numOfCards: players[i].cards.length, isJoined : players[i].joined};
                 state.playersInfo.push(obj);
             }
 
@@ -58,7 +58,7 @@ export default createStore({
         initSession({ commit, state }, sessionData) {
             return axios.post(URL + '/session/new', {
                 decks: sessionData.decks,
-                players: 4,
+                players: 4, //total slots 
                 name: sessionData.name,
                 cardsPerPlayer: sessionData.cardsPerPlayer,
                 cardsOnTable: sessionData.cardsOnTable
@@ -108,6 +108,19 @@ export default createStore({
         },
 
         playCards({ commit, state }, payload) {
+            axios.post(URL + '/player/playcard', {
+                sessionId: state.sessionId,
+                playerId: state.playerId,
+                cardIndex: payload.index,
+                card: payload.card,
+            }).then((res) => {
+                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setTableCards', res.data.table);
+            }).catch((err) => console.log(err));
+
+        },
+
+        joinRoom({ commit, state }, payload) {
             axios.post(URL + '/player/playcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
