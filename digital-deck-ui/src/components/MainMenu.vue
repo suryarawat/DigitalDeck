@@ -6,18 +6,36 @@
       <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
       <div v-if="createForm" class="input-form">
-          <div class="number-box">
-            <input
-              v-model.number="deckSelected"
-              type="number"
-              min="1"
-              oninput="validity.valid||(value='');"
-              required=""
-            />
-            <label>Number of Decks</label>
+        <div class="select-box">
+          <label>Gamemode</label>
+          <div class="select-gamemode">
+            <select v-model="gamemode">
+              <option :value="0">Default</option>
+              <option :value="1">Blackjack</option>
+            </select>
           </div>
+        </div>
 
         <div class="number-box">
+          <input v-model="name"
+          type="text"
+          required=""
+          />
+          <label>Player Name</label>
+        </div>
+
+        <div class="number-box">
+          <input
+            v-model.number="deckSelected"
+            type="number"
+            min="1"
+            oninput="validity.valid||(value='');"
+            required=""
+          />
+          <label>Number of Decks</label>
+        </div>
+
+        <div v-show="gamemode != 1" class="number-box">
           <input
             v-model.number="cardsPerPlayer"
             type="number"
@@ -28,7 +46,7 @@
           <label>Cards on hand</label>
         </div>
 
-        <div class="number-box">
+        <div v-show="gamemode != 1" class="number-box">
           <input
             v-model.number="cardsOnTable"
             type="number"
@@ -39,17 +57,8 @@
           <label>Cards on table</label>
         </div>
 
-          <div class="number-box">
-            <input v-model="name"
-            type="text"
-            required=""
-            />
-            <label>Name</label>
-          </div>  
-          <button class="button" @click="submitForm">Start</button>
+        <button class="button" @click="submitForm">Start</button>
       </div>
-
-
 
       <div v-if="joinForm" class="input-form">
         <div class="number-box">
@@ -77,7 +86,7 @@
         <span v-else><strong> for number of decks</strong></span>
       </p>
     </div>
-    <lobby v-if="isLoaded" />
+    <lobby v-if="isLoaded" :gamemode="gamemode" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
@@ -99,11 +108,12 @@ export default {
     return {
       isLoaded: false,
       deckSelected: "",
-      cardsPerPlayer: "",
-      cardsOnTable: "",
+      cardsPerPlayer: null,
+      cardsOnTable: null,
       createForm: false,
       joinForm: false,
-      name: ""
+      name: "",
+      gamemode: 0
     };
   },
   components: {
@@ -132,7 +142,7 @@ export default {
       },
       cardsPerPlayer: {
         requiredIfFunction: requiredUnless(() => {
-          return this.deckSelected > 10 || this.deckSelected < 0;
+          return this.deckSelected > 10 || this.deckSelected < 0 || this.gamemode === 1;
         }),
         between: between(1, 52 * this.deckSelected),
       },
@@ -142,10 +152,10 @@ export default {
             this.cardsPerPlayer != null &&
             (this.cardsPerPlayer > 52 * this.deckSelected ||
               this.cardsPerPlayer < 0)
-          );
+          ) || this.gamemode === 1;
         }),
         between: between(0, 52 * this.deckSelected - this.cardsPerPlayer),
-      },
+      }
     };
   },
   methods: {
@@ -158,17 +168,15 @@ export default {
           .dispatch("initSession", {
             decks: this.deckSelected,
             name: this.name,
-            cardsPerPlayer: this.cardsPerPlayer,
-            cardsOnTable: this.cardsOnTable,
+            cardsPerPlayer: this.gamemode === 0 ? this.cardsPerPlayer : 2,
+            cardsOnTable: this.gamemode === 0 ? this.cardsOnTable : 2,
+            gamemode: this.gamemode
           })
           .then(() => {
-          // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+            $cookies.set("Gamemode", this.gamemode, "1h");
             this.isLoaded = true;
-            
           });
-
       }
-
     },
 
     async joinRoomForm() {
@@ -194,6 +202,8 @@ export default {
 
     closeSession() {
       $cookies.set("SessionId", -1, "1h");
+      $cookies.set("Gamemode", -1, "1h");
+      $cookies.set("isGameStarted", -1, -1);
       this.isLoaded = false;
     },
 
@@ -205,7 +215,7 @@ export default {
     toggleJoinForm() {
       this.joinForm = !this.joinForm;
       this.createForm = false;
-    },
+    }
   },
 };
 </script>

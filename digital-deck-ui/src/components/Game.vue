@@ -11,6 +11,7 @@
 import HandArea from './HandArea.vue';
 import TableArea from './TableArea.vue';
 import OtherPlayersArea from './OtherPlayersArea.vue';
+import { VueCookies } from "vue-cookies";
 
 export default {
     name: 'game',
@@ -18,6 +19,9 @@ export default {
         HandArea,
         OtherPlayersArea,
         TableArea
+    },
+    created() {
+        this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
     }
 };
 </script>
@@ -33,6 +37,5 @@ export default {
 
 .h1{
     position: absolute;
-
 }
 </style>

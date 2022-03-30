@@ -1,6 +1,6 @@
 <template>
   <div class="other-players-area">
-    <div class="player-info" v-for="player in playersList">
+    <div class="player-info" v-for="player in playersList" :key="player.name">
         <span class="names">{{player.name}}</span>
         <br/>
         <span class="cards">{{player.numCards}} X </span><img :src="cardImage()"/>
@@ -27,10 +27,6 @@ export default {
   methods: {
     cardImage() {
       return CardDeckImageEnum.BACK.ONE;
-    },
-
-    playersList(){
-      return otherPlayers;
     }
   },
   components: {

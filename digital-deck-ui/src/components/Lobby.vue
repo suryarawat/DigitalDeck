@@ -1,8 +1,6 @@
 <template>
   <div>
  <h1 v-if="!isLoaded"  class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
-
-
     <button
       v-if="!isLoaded && this.$store.getters.getPlayerId===0"  
       class="button"
@@ -38,6 +36,7 @@
 <script>
 import Game from "./Game.vue";
 import PlayersList from "./PlayersList.vue";
+import { VueCookies } from "vue-cookies";
 
 export default {
   name: "lobby",
@@ -45,41 +44,50 @@ export default {
     Game,
     PlayersList,
   },
+  props: {
+    gamemode: Number
+  },
+  created() {
+    if ($cookies.get("isGameStarted") == 1) {
+      this.isLoaded = true;
+    }
+    this.$socket.emit("joinRoom", this.$store.getters.getSessionId);
+  },
   data: () => {
     return {
-      isLoaded: false,
+      isLoaded: false
     };
   },
-   created() {
+  created() {
+    this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
 
-  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
-  this.$socket.on("PlayerJoined", (session) => {
-      this.$store.dispatch("updatePlayerInfo", {
-            sessionId: this.$store.getters.getSessionId,
-            players: session.players
-          });
+    this.$socket.on("PlayerJoined", (session) => {
+        this.$store.dispatch("updatePlayerInfo", {
+              sessionId: this.$store.getters.getSessionId,
+              players: session.players
+        });
     });
+
     this.$socket.on("launchGame", (session) => {
-    this.isLoaded = true;
       this.$store.dispatch("retrieveSession", {
-            sessionId: this.$store.getters.getSessionId,
-          });
+        sessionId: this.$store.getters.getSessionId,
+      }).then(() => {
+        this.isLoaded = true;
+      });
     });
-
   },
   methods: {
     loadGame() {
+        $cookies.set("isGameStarted", 1, -1);
+        this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
         this.$store.dispatch("distributeCards", {
             sessionId: this.$store.getters.getSessionId
           }).then(() => {
              this.$socket.emit('gameStarted', this.$store.getters.getSessionId);
-
              this.isLoaded = true;
           });
-    },
-    
-
-  },
+    }
+  }
 };
 </script>
 
