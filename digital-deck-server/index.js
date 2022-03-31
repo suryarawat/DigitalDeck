@@ -5,26 +5,21 @@ const http = require("http");
 const { Server } = require('socket.io');
 const sessionRoute = require('./routes/session');
 const playerRoute = require('./routes/player');
-
-var client_url = "http://localhost:3000";
-
-if (process.env.NODE_ENV == 'production') {
-  client_url = "http://35.192.81.46:3000";
-  console.log(client_url);
-}
+const {handleSocket} = require('./socket');
 
 const app = express();
+
+app.use(express.static('../digital-deck-ui')); 
+
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: client_url
+    origin: "http://localhost:3000"
   }
 });
 const port = 5000;
 
-io.on("connection", (socket) => {
-  socket.emit("hello-world");
-});
+handleSocket(io);
 
 app.use(cors());
 app.use(bodyParser.json());
