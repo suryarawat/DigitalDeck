@@ -80,7 +80,7 @@ router.post('/shufflecards', async function (req, res) {
   }
 });
 
-//shuffle cards during a session
+//distribute cards during a session
 router.post('/distributecards', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
   if (isNaN(sessionId)) {
