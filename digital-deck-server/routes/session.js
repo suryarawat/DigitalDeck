@@ -8,7 +8,6 @@ router.post('/new', async function (req, res) {
     // process request
     var decks = Number(req.body.decks);
     var players = Number(req.body.players);
-    var name = req.body.name;
     var cardsPerPlayer = Number(req.body.cardsPerPlayer);
     var cardsOnTable = Number(req.body.cardsOnTable);
   
@@ -28,7 +27,6 @@ router.post('/new', async function (req, res) {
         res.status(400).send('Invalid request. Cannot distribute more than number of available cards');
       } else {
         currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
-        currSession.players[0].setName(name);
         addSession(currSession);
         res.status(200).send(currSession);
       }
