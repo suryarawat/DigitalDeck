@@ -49,7 +49,16 @@ export default {
   },
   methods: {
     loadGame() {
-      this.isLoaded = true;
+      // Distribute the cards here
+      if (!this.$store.getters.getGameInfo){
+        this.$store.dispatch("distributeCards", {
+            sessionId: this.$store.getters.getSessionId
+          }).then(() => {
+             this.isLoaded = true;
+          });
+  
+      }
+
     },
   },
 };

@@ -12,22 +12,17 @@ module.exports = {
    * @param cardsOnTable The number of cards to put on the table.
    * @return {json} The json object containing players with player ids and cards assigned to them, table and cards of table and remaining cards on the deck.
    */
-  distCards: function (decks, players, cardsPerPlayer, cardsOnTable) {
-    let playerObjs = [];
+  distCards: function (decks, numPlayers, cardsPerPlayer, cardsOnTable, players ) {
     let table = new Table([]);
-
     let cards = getCards(decks);
-
-    if (cardsPerPlayer * players <= 52 * decks - cardsOnTable) {
-      for (var i = 0; i < players; i++) {
-        let currPlayer = new Player([], "player" + i);
+    if (cardsPerPlayer * numPlayers <= 52 * decks - cardsOnTable) {
+      for (var i = 0; i < numPlayers; i++) {
+         let currPlayer = players[i];
         for (var j = 0; j < cardsPerPlayer; j++) {
           let card = cards.pop();
           currPlayer.addCardTop(card);
         }
-        playerObjs.push(currPlayer);
       }
-
       for (var k = 0; k < cardsOnTable; k++) {
         let card = cards.pop();
         table.addCardTop(card);
@@ -37,7 +32,7 @@ module.exports = {
         `Not enough cards, Cannot distribute ${cardsPerPlayer} cards each to ${players} players and ${cardsOnTable} on the table.`
       );
     }
-    return { players: playerObjs, table: table, deck: cards };
+    return {  table: table, deck: cards };
   },
 };
 

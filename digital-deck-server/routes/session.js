@@ -3,6 +3,7 @@ const Session = require('../models/session');
 const {getConcSessions , addSession, getSession} = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 var Player = require("../models/player.js");
+const cardDistService = require('../services/cardDistService');
 
 
 // /newsession
@@ -71,6 +72,35 @@ router.post('/shufflecards', async function (req, res) {
         const updated =  cardShuffleService.shuffleCards(deck);
         currSession.deck = updated;
         res.status(200).send(updated);
+      }
+      catch (err){
+        console.log(err);
+      }
+    }
+  }
+});
+
+//shuffle cards during a session
+router.post('/distributecards', async function (req, res) {
+  let sessionId = Number(req.body.sessionId);
+  if (isNaN(sessionId)) {
+    res.status(400).send('Invalid call. Needs sessionId as number in the query.');
+  } else {
+    let currSession = getSession(sessionId);
+    if (!currSession) {
+      res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
+    } else {
+      try {
+        let distributed = cardDistService.distCards(
+          currSession.numDecks,
+          currSession.numPlayers,
+          currSession.cardsPerPlayer,
+          currSession.cardsOnTable,
+          currSession.players
+        ); 
+        currSession.table= distributed.table;
+        currSession.deck= distributed.deck;
+        res.status(200).send(currSession);
       }
       catch (err){
         console.log(err);

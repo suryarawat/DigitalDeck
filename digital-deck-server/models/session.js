@@ -17,22 +17,8 @@ module.exports = class Session {
     this.cardsPerPlayer = cardsPerPlayer;
     this.cardsOnTable= cardsOnTable;
     Player.resetPlayerCount();
-
-    //add First PLayer when a new session is created.. empty cards 
     let newPlayer = new Player([], "");
     this.players.push(newPlayer);
-    // new player ids
-    // initial card distribution
-    // let assignments = cardDistService.distCards(
-    //   decks,
-    //   players,
-    //   cardsPerPlayer,
-    //   cardsOnTable
-    // );
-
-    // this.players = assignments.players;
-    // this.table = assignments.table;
-    // this.deck = assignments.deck;
   }
   // updates Deck when shuffleCard Service is called
   updateDeck(newDeck) {
