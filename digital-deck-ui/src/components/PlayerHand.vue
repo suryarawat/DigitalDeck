@@ -5,7 +5,7 @@
       class="player-hand"
       :key="card"
       :id="'card' + index"
-      @click="playCard(card, index)"
+      @click="playCard(card,index)"
       :style="
         'position: absolute; transform: translate(' +
         index * (getWindowWidth() / this.$store.getters.getPlayerCards.length) +
@@ -23,22 +23,23 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "player-hand",
+
   methods: {
     cardImage(card) {
       return card > 0
         ? CardDeckImageEnum.FRONT[card - 1]
         : CardDeckImageEnum.BACK.DEFAULT;
     },
-
-    playCard(card, index) {
-      this.$store.dispatch("playCards", {
-        card: card,
-        index: index,
+    
+    playCard(card,index) {
+      this.$store.dispatch('playCards',{
+        card : card,
+        index : index
       });
     },
 
     getWindowWidth() {
-      return window.innerWidth * 0.7;
+      return window.innerWidth*.7;
     },
   },
 };
@@ -46,6 +47,6 @@ export default {
 
 <style scoped>
 .player-hand {
-  cursor: pointer;
+    cursor: pointer;
 }
 </style>

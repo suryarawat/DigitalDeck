@@ -4,6 +4,7 @@
 
 <script>
 import MainMenu from "./components/MainMenu.vue";
+import io from "socket.io-client";
 
 export let api_url =  "http://localhost:5000";
 if ( process.env.NODE_ENV === 'production'){
@@ -15,7 +16,6 @@ export default {
   components: {
     MainMenu,
   },
-
   data: () => {
     return {
       socket: null
@@ -26,9 +26,8 @@ export default {
       transports: ["websocket"]
     });
   },
-
   mounted() {
-    this.$socket.on("hello-world", () => {
+    this.socket.on("hello-world", () => {
       console.log("Hello World!");
     });
   }

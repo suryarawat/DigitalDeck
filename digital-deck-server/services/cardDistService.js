@@ -20,7 +20,7 @@ module.exports = {
 
     if (cardsPerPlayer * players <= 52 * decks - cardsOnTable) {
       for (var i = 0; i < players; i++) {
-        let currPlayer = new Player([], "player" + i);
+        let currPlayer = new Player([]);
         for (var j = 0; j < cardsPerPlayer; j++) {
           let card = cards.pop();
           currPlayer.addCardTop(card);
