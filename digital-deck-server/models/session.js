@@ -11,20 +11,28 @@ module.exports = class Session {
     this.numDecks = decks;
     this.numPlayers = players;
     this.sessionId = Session.id++;
-
-    // new player ids
+    this.players =[] ;
+    this.table ;
+    this.deck=[];
+    this.cardsPerPlayer = cardsPerPlayer;
+    this.cardsOnTable= cardsOnTable;
     Player.resetPlayerCount();
-    // initial card distribution
-    let assignments = cardDistService.distCards(
-      decks,
-      players,
-      cardsPerPlayer,
-      cardsOnTable
-    );
 
-    this.players = assignments.players;
-    this.table = assignments.table;
-    this.deck = assignments.deck;
+    //add First PLayer when a new session is created.. empty cards 
+    let newPlayer = new Player([], "");
+    this.players.push(newPlayer);
+    // new player ids
+    // initial card distribution
+    // let assignments = cardDistService.distCards(
+    //   decks,
+    //   players,
+    //   cardsPerPlayer,
+    //   cardsOnTable
+    // );
+
+    // this.players = assignments.players;
+    // this.table = assignments.table;
+    // this.deck = assignments.deck;
   }
   // updates Deck when shuffleCard Service is called
   updateDeck(newDeck) {

@@ -80,6 +80,6 @@ export default {
   transform: translate(140%, 100%);
   font-size: larger;
   font-weight: bold;
-  color: white;
+  color: grey;
 }
 </style>

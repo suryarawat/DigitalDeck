@@ -54,10 +54,17 @@
 
       <div v-if="joinForm" class="input-form">
         <div class="number-box">
-          <input type="number" required="" />
+          <input v-model="roomid" oninput="validity.valid||(value='');" type="number" required="" />
           <label>Enter ID</label>
         </div>
-        <button class="button">Join</button>
+        <div class="number-box">
+            <input v-model="joinname"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
+          </div>
+        <button class="button" @click="joinRoomForm">Join</button>
       </div>
 
       <p v-for="error of v$.$errors" :key="error.$uid">
@@ -97,7 +104,8 @@ export default {
       cardsOnTable: "",
       createForm: false,
       joinForm: false,
-      name: ""
+      name: "",
+      errors:[]
     };
   },
   components: {
@@ -161,6 +169,23 @@ export default {
             this.isLoaded = true;
           });
 
+      }
+    },
+
+    async joinRoomForm() {
+      this.errors = [];
+      if (this.roomid!=null   ) {
+            this.$store.dispatch("joinSession", {
+            sessionId: this.roomid,
+            name: this.joinname,
+          })
+          .then(() => {
+            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             this.isLoaded = true;
+          });
+      }        
+      else {
+      console.log("Wrong room id enter again ");
       }
     },
 
