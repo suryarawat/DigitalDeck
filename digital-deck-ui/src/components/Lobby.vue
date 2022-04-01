@@ -47,6 +47,9 @@ export default {
       isLoaded: false,
     };
   },
+  created() {
+    this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+  },
   methods: {
     loadGame() {
       this.isLoaded = true;

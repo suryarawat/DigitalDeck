@@ -15,16 +15,6 @@ export default {
   components: {
     MainMenu,
   },
-  data: () => {
-    return {
-      socket: null
-    };
-  },
-  created() {
-    this.socket = io(api_url, {
-      transports: ["websocket"]
-    });
-  },
   mounted() {
     this.$socket.on("hello-world", () => {
       console.log("Hello World!");

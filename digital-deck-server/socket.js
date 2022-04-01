@@ -5,7 +5,8 @@ function handleSocket(io)
         socket.emit("hello-world");
       
         socket.on('joinRoom', (sessionId) => {
-            // console.log("in server", sessionId)
+            socket.join(sessionId);
+            console.log("in server", sessionId)
         });
       
       })
