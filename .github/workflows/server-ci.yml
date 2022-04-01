@@ -31,6 +31,6 @@ jobs:
       run: npm ci
     - name: Test
       env:
-        PASSWORD: {{PASSWORD}}
+        PASSWORD: ${{secrets.PASSWORD}}
       working-directory: ./digital-deck-server
       run: npm run test --if-present
