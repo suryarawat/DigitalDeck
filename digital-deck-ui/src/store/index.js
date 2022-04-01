@@ -71,7 +71,11 @@ export default createStore({
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-            }).catch((err) => console.log(err));
+                return true;
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
         },
 
         retrieveSession({ commit, state }, id) {
@@ -87,7 +91,11 @@ export default createStore({
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-            }).catch((err) => console.log(err));
+                return true;
+            }).catch((err) => {
+                console.log(err);
+                return false;
+            });
         },
 
         drawCards({ commit, state }) {
