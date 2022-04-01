@@ -14,6 +14,9 @@ export default {
     this.$socket.on("hello-world", () => {
       console.log("Hello World!");
     });
+    this.$socket.on("PlayerJoined", () => {
+      console.log("a player has joined");
+    });
   }
 };
 </script>

@@ -47,7 +47,15 @@ export default {
       isLoaded: false,
     };
   },
+   created() {
+
+  setTimeout(() => this.$socket.emit('joinRoom', this.$store.getters.getSessionId), 1000);
+  this.$socket.on("PlayerJoined", (players) => {
+      console.log("a player has joined");
+    });
+  },
   methods: {
+    
     loadGame() {
         this.$store.dispatch("distributeCards", {
             sessionId: this.$store.getters.getSessionId

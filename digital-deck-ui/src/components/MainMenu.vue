@@ -166,7 +166,7 @@ export default {
             cardsOnTable: this.cardsOnTable,
           })
           .then(() => {
-            this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+          // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
             this.isLoaded = true;
             
           });
@@ -183,7 +183,7 @@ export default {
             name: this.joinname,
           })
           .then(() => {
-             this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
              this.isLoaded = true;
           });
       }        
