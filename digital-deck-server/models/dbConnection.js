@@ -1,9 +1,9 @@
-require('dotenv').config({path:'./../digital-deck-server/ENV.env'});
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const {SecretManagerServiceClient} = require('@google-cloud/secret-manager');
 
 var password = '';
-if (process.env.NODE_ENV != 'production'){
+if (process.env.NODE_ENV != 'production' || process.env.CI) {
     password = process.env.PASSWORD;
 }
 else{
@@ -18,6 +18,9 @@ else{
         password = version.payload.data.toString();
     }
     accessSecretVersion();
+}
+if (password != '') {
+    console.log('password found!');
 }
 const uri = "mongodb+srv://app:" + password + "@dd.mkxa1.mongodb.net/DD?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
