@@ -106,13 +106,13 @@ export default {
   created() {
     let currId = $cookies.get("SessionId");
     if (currId != null && currId != -1) {
-      this.$store
-        .dispatch("retrieveSession", {
-          sessionId: currId,
-        })
-        .finally(() => {
+        var success = this.$store
+          .dispatch("retrieveSession", {
+            sessionId: currId,
+          });
+        if (success) {
           this.isLoaded = true;
-        });
+        }
     } else {
       $cookies.set("SessionId", -1, "1h");
     }
@@ -149,17 +149,20 @@ export default {
       if (!isFormCorrect) {
         return;
       } else {
-        this.$store
+        var success = await this.$store
           .dispatch("initSession", {
             decks: this.deckSelected,
             name: this.name,
             cardsPerPlayer: this.cardsPerPlayer,
             cardsOnTable: this.cardsOnTable,
           })
-          .then(() => {
-            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
-            this.isLoaded = true;
-          });
+        if (success) {
+          this.isLoaded = true;
+        }
+          // .then(() => {
+          //   // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+          //   this.isLoaded = true;
+          // });
 
       }
     },
