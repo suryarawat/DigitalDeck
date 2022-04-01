@@ -49,13 +49,15 @@ export default {
   },
    created() {
 
-  setTimeout(() => this.$socket.emit('joinRoom', this.$store.getters.getSessionId), 1000);
-  this.$socket.on("PlayerJoined", (players) => {
-      console.log("a player has joined");
+  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+  this.$socket.on("PlayerJoined", (session) => {
+      this.$store.dispatch("updatePlayerInfo", {
+            sessionId: this.$store.getters.getSessionId,
+            players: session.players
+          });
     });
   },
   methods: {
-    
     loadGame() {
         this.$store.dispatch("distributeCards", {
             sessionId: this.$store.getters.getSessionId

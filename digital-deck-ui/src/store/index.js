@@ -103,7 +103,7 @@ export default createStore({
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
-                UnitTests.testInitSession(state);
+                //UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },
 
@@ -146,6 +146,12 @@ export default createStore({
                 commit('setPlayersInfo', res.data.players);
             }).catch((err) => console.log(err));
 
+        },
+        updatePlayerInfo({ commit, state }, sessionData) {
+            console.log(sessionData);
+            commit('setSessionId', sessionData.sessionId);
+            commit('setPlayersInfo', sessionData.players);
+            $cookies.set('SessionId', sessionData.sessionId, '1h');
         }
     },
     getters: {
