@@ -80,6 +80,7 @@ export default createStore({
             return axios.get(api_url + '/session/current', {
                 params: { sessionId: id.sessionId}
             }).then((res) => {
+                console.log(res.data);
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);
                 commit('setPlayerCards', res.data.players[0].cards);

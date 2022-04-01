@@ -6,16 +6,17 @@
       <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
       <div v-if="createForm" class="input-form">
-        <div class="number-box">
-          <input
-            v-model.number="deckSelected"
-            type="number"
-            min="1"
-            oninput="validity.valid||(value='');"
-            required=""
-          />
-          <label>Number of Decks</label>
-        </div>
+
+          <div class="number-box">
+            <input
+              v-model.number="deckSelected"
+              type="number"
+              min="1"
+              oninput="validity.valid||(value='');"
+              required=""
+            />
+            <label>Number of Decks</label>
+          </div>
 
         <div class="number-box">
           <input
@@ -39,15 +40,8 @@
           <label>Cards on table</label>
         </div>
 
-        <div class="number-box">
-          <input v-model="name"
-          type="text"
-          required=""
-          />
-          <label>Name</label>
-        </div>
-
-        <button class="button" @click="submitForm">Start</button>
+          <button class="button" @click="submitForm">Start</button>
+        </form>
       </div>
 
       <div v-if="joinForm" class="input-form">

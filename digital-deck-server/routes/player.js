@@ -19,7 +19,7 @@ router.post('/playcard', async function (req, res) {
     return;
   }
 
-  var session = getSession(sessionId);
+  var session = await getSession(sessionId);
   if (!session) {
     res.status(400).send("Invalid request. Could not find session with Id " + sessionId);
     return;
@@ -53,7 +53,7 @@ router.post('/drawcard', async function (req, res) {
   if (isNaN(sessionId) || isNaN(playerId) || isNaN(numOfCards) || numOfCards <= 0) {
     res.status(400).send('Invalid call. Needs sessionId, playerId, and numOfCards as positive numbers in the query.');
   } else {
-    let currSession = getSession(sessionId);
+    let currSession = await getSession(sessionId);
 
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}.`);

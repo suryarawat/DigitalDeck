@@ -1,23 +1,38 @@
 const Session = require('../models/session');
+const sessionData = require('../models/dbConnection');
 
-let concSessions = [];
+
+/**
+ * Cleans sessions from the database
+ * 
+ * @return [array of {json} ] The array of json containing information of all sessions
+ */
+function cleanSession(session) {
+    delete session._id;
+}
 
 /**
  * Returns all the sessions
  * 
  * @return [array of {json} ] The array of json containing information of all sessions
  */
-function getConcSessions()
+async function getConcSessions()
 {
-    return concSessions;
+    var sessions = await sessionData.find();
+    console.log(sessions);
+    sessions.forEach((session) => {
+        session = cleanSession(session);
+    });
+    console.log(sessions);
+    return sessions;
 }
 
 /**
  * Clear all the sessions. Used for testing
  */
-function clearConcSessions()
+async function clearConcSessions()
 {
-    concSessions = [];
+    await sessionData.deleteMany();
     Session.id = 0;
 }
 
@@ -26,9 +41,9 @@ function clearConcSessions()
  * 
  * @param session The session to add
  */
-function addSession(session)
+async function addSession(session)
 {
-    concSessions.push(session);
+    await sessionData.insertOne(session);
 }
 
 /**
@@ -36,9 +51,11 @@ function addSession(session)
  * 
  * @param id The session to add
  */
-function getSession(id)
+async function getSession(id)
 {
-    return concSessions.find(session => session.sessionId === id);
+    const query = {sessionId: id};
+    const session = await sessionData.findOne(query);
+    return session;
 }
 
 /**
@@ -52,4 +69,4 @@ function getPlayer(session, id)
     return session.players.find(player => player.playerId === id);
 }
 
-module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer};
+module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer, cleanSession};

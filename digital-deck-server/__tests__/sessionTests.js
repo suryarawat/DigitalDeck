@@ -113,7 +113,7 @@ describe('POST /session/new', function () {
 describe('GET /session/current', function () {
   // Valid request
   it('Typical valid request. Respond with 200', async function () {
-    addSession({
+    await addSession({
       "numDecks": 1,
       "numPlayers": 1, 
       "sessionId": 0,
@@ -150,7 +150,7 @@ describe('GET /session/current', function () {
 describe('POST /session/shufflecards', function () {
   // Valid request
   it('Typical valid request. Respond with 200', async function () {
-    addSession({
+    await addSession({
       "numDecks": 1,
       "numPlayers": 1, 
       "sessionId": 0,
