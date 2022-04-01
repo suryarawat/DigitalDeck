@@ -55,6 +55,8 @@ export default {
              this.isLoaded = true;
           });
     },
+    
+
   },
 };
 </script>

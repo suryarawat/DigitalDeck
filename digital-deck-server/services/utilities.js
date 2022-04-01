@@ -52,4 +52,18 @@ function getPlayer(session, id)
     return session.players.find(player => player.playerId === id);
 }
 
-module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer};
+/**
+ * Returns players based on session 
+ * 
+ * @param session the session in which to find the player
+ */
+ function getPlayers(session)
+ {  let nameArray = [];
+    let players = session.players;
+    for (let i = 0 ; i<players.length;i++){
+        nameArray.push(players[i].name);
+    }
+    return nameArray;
+ }
+
+module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer, getPlayers};

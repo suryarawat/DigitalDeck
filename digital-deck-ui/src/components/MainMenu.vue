@@ -157,6 +157,7 @@ export default {
       if (!isFormCorrect) {
         return;
       } else {
+
         this.$store
           .dispatch("initSession", {
             decks: this.deckSelected,
@@ -165,11 +166,13 @@ export default {
             cardsOnTable: this.cardsOnTable,
           })
           .then(() => {
-            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+            this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
             this.isLoaded = true;
+            
           });
 
       }
+
     },
 
     async joinRoomForm() {
@@ -180,7 +183,7 @@ export default {
             name: this.joinname,
           })
           .then(() => {
-            // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
              this.isLoaded = true;
           });
       }        
