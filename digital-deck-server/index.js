@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 const sessionRoute = require('./routes/session');
 const playerRoute = require('./routes/player');
 const {handleSocket} = require('./socket');
-const {connectDB} = require('./models/dbConnection');
+
 var client_url = "http://localhost:3000";
 
 if (process.env.NODE_ENV == 'production') {
@@ -18,7 +18,6 @@ const app = express();
 
 app.use(express.static('../digital-deck-ui')); 
 
-connectDB();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {

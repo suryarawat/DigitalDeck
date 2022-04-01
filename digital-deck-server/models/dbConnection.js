@@ -26,16 +26,8 @@ if (password != '') {
 const uri = "mongodb+srv://app:" + password + "@dd.mkxa1.mongodb.net/DD?retryWrites=true&w=majority";
 const client = new MongoClient(uri);
 
-var database;
-var sessionData;
-
-function connectDB(){
-    const connection = client.connect();
-    if (connection){
-        console.log('connected to database...');
-    }
-    database = client.db('DD');
-    sessionData = database.collection('sessions');
-}
-module.exports = {sessionData, connectDB};
+const connection = client.connect();
+const database = client.db('DD');
+const sessionData = database.collection('sessions');
+module.exports = sessionData;
 
