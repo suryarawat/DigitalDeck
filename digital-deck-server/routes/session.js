@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Session = require('../models/session');
-const {getConcSessions, clearConcSessions , addSession, getSession, cleanSession} = require('../services/utilities');
+const {getConcSessions, addSession, getSession, cleanSession} = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 
 // /newsession
@@ -31,7 +31,6 @@ router.post('/new', async function (req, res) {
         currSession.players[0].setName(name);
         await addSession(currSession);
         cleanSession(currSession);
-        console.log(currSession);
         res.status(200).send(currSession);
       }
     }
