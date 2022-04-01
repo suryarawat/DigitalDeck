@@ -159,11 +159,6 @@ export default {
         if (success) {
           this.isLoaded = true;
         }
-          // .then(() => {
-          //   // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
-          //   this.isLoaded = true;
-          // });
-
       }
     },
 
