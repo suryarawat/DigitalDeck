@@ -19,7 +19,7 @@ else{
     }
     accessSecretVersion();
 }
-if (password != '') {
+if (password != "") {
     console.log('password found!');
 }
 

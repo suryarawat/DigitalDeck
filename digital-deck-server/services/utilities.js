@@ -50,10 +50,8 @@ async function getConcSessions()
     const cursor = await sessionData.find();
     sessions = await cursor.toArray();
     sessions.forEach(session => {
-        console.log(session);
         session = cleanSession(session);
     });
-    console.log(sessions);
     return sessions;
 }
 
