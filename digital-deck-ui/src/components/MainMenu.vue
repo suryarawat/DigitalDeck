@@ -6,7 +6,6 @@
       <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
       <div v-if="createForm" class="input-form">
-        <form>
           <div class="number-box">
             <input
               v-model.number="deckSelected"
@@ -49,7 +48,6 @@
           </div>
 
           <button class="button" @click="submitForm">Start</button>
-        </form>
       </div>
 
       <div v-if="joinForm" class="input-form">
