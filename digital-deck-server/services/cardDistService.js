@@ -51,7 +51,7 @@ module.exports = {
 function getCards(decks) {
   let cards = [];
   for (var j = 0; j < decks; j++) {
-    for (var i = 1; i <= 52; i++) {
+    for (var i = 1; i <= 52*decks; i++) {
       cards.push(i);
     }
   }
