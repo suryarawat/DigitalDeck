@@ -73,7 +73,7 @@ export default {
 
 <style scoped>
 .container {
-  margin-top: 20%;
+  margin-top: 15%;
   overflow: none;
   display: grid;
   grid-template-columns: auto auto auto;
@@ -82,20 +82,22 @@ export default {
 
 .players {
   border-radius: 30px;
-  width: 100%;
-  height: 100%;
-  margin-top: 130%;
+  width: 150px;
+  height: 150px;
+  margin-top: 20%;
   background-image: url("../assets/blank-profile-picture.png");
   background-size: contain;
   background-repeat: no-repeat;
-
   padding: 10px;
 }
 
 .names{
-  transform: translate(140%, 100%);
+  transform: translate(150%, 100%);
+  padding-top: 10px;
   font-size: larger;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: bold;
-  color: grey;
 }
 </style>
