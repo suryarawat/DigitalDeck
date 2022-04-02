@@ -6,9 +6,17 @@ function handleSocket(io)
       
         socket.on('joinRoom', (sessionId) => {
             socket.join(sessionId);
-            console.log("in server", sessionId)
+            console.log("in server", sessionId);
         });
-      
+
+        socket.on('disconnect', () => {
+            console.log("Disconnected");
+        });
+
+        socket.on('drawCard', ({ sessionId, numCards, player }) => {
+            // console.log("current cards", cards);
+            socket.to(sessionId).emit('cardDrawn', { deck: numCards, player: player });
+        });
       })
 }
 

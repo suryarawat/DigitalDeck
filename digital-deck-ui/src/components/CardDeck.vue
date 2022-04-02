@@ -17,6 +17,11 @@ export default {
       CardDeckImageEnum,
     };
   },
+  mounted() {
+    this.$socket.on("cardDrawn", ({ deck, player }) => {
+        this.$store.commit('setCardsInDeck', deck);
+    });
+  },
   computed: {
     deckImage() {
       let numCards = this.$store.getters.getNumCardsInDeck;
@@ -33,7 +38,16 @@ export default {
   methods: {
     drawCard() {
       if (this.$store.getters.getNumCardsInDeck > 0) {
-        this.$store.dispatch("drawCards");
+        this.$store.dispatch("drawCards").then(() => {
+            this.$socket.emit("drawCard", {
+                sessionId: this.$store.getters.getSessionId,
+                numCards: this.$store.getters.getNumCardsInDeck,
+                player: {   // for player card display synchronization
+                    id: this.$store.getters.getPlayerId,
+                    numCards: this.$store.getters.getPlayerCards.length
+                }
+            });
+        });
       }
     },
 
