@@ -1,5 +1,7 @@
 <template>
   <div>
+ <h1 v-if="!isLoaded" class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
+
     <button
       v-if="!isLoaded"
       class="button"
@@ -56,12 +58,20 @@ export default {
             players: session.players
           });
     });
+    this.$socket.on("launchGame", (session) => {
+    this.isLoaded = true;
+      this.$store.dispatch("retrieveSession", {
+            sessionId: this.$store.getters.getSessionId,
+          });
+    });
+
   },
   methods: {
     loadGame() {
         this.$store.dispatch("distributeCards", {
             sessionId: this.$store.getters.getSessionId
           }).then(() => {
+             this.$socket.emit('gameStarted', this.$store.getters.getSessionId);
              this.isLoaded = true;
           });
     },
