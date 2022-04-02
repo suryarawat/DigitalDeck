@@ -9,10 +9,11 @@ if (process.env.NODE_ENV != 'production' || process.env.CI) {
 else{
     // Instantiates a client
     const client = new SecretManagerServiceClient();
-
+    const name = 'projects/628328056407/secrets/MongoDBPassword/versions/1';
+    console.log('name');
     async function accessSecretVersion() {
         const [version] = await client.accessSecretVersion({
-            name: "projects/628328056407/secrets/MongoDBPassword/versions/1",
+            name: name,
         });
         // Extract the password as a string.
         password = version.payload.data.toString();
