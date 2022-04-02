@@ -12,7 +12,7 @@ else{
 
     async function accessSecretVersion() {
         const [version] = await client.accessSecretVersion({
-            name: "MongoDBPassword",
+            name: "projects/628328056407/secrets/MongoDBPassword/versions/1",
         });
         // Extract the password as a string.
         password = version.payload.data.toString();
