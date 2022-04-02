@@ -40,8 +40,15 @@
           <label>Cards on table</label>
         </div>
 
-          <button class="button" @click="submitForm">Start</button>
-        </form>
+        <div class="number-box">
+          <input v-model="name"
+          type="text"
+          required=""
+          />
+          <label>Name</label>
+        </div>
+
+        <button class="button" @click="submitForm">Start</button>
       </div>
 
       <div v-if="joinForm" class="input-form">
