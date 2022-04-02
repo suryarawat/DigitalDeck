@@ -153,7 +153,6 @@ export default {
             cardsPerPlayer: this.cardsPerPlayer,
             cardsOnTable: this.cardsOnTable,
           }).then(() => {
-            console.log(this.$store.getters.getSessionId);
             this.isLoaded = true;
           });
       }

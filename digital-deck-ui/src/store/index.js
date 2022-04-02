@@ -71,10 +71,8 @@ export default createStore({
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-                // return true;
             }).catch((err) => {
                 console.log(err);
-                // return false;
             });
         },
 
@@ -91,10 +89,8 @@ export default createStore({
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-                return true;
             }).catch((err) => {
                 console.log(err);
-                return false;
             });
         },
 
