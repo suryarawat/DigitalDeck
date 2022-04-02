@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Session = require('../models/session');
-const {getConcSessions, addSession, getSession, cleanSession} = require('../services/utilities');
+const {getConcSessions, addSession, getSession, cleanSession, updateSession} = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 
 // /newsession
@@ -27,7 +27,7 @@ router.post('/new', async function (req, res) {
       if (cardsPerPlayer * players + cardsOnTable > 52 * decks) {
         res.status(400).send('Invalid request. Cannot distribute more than number of available cards');
       } else {
-        currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
+        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable);
         currSession.players[0].setName(name);
         await addSession(currSession);
         cleanSession(currSession);
@@ -71,6 +71,7 @@ router.post('/shufflecards', async function (req, res) {
         let deck = currSession.deck;
         const updated =  cardShuffleService.shuffleCards(deck);
         currSession.deck = updated;
+        await updateSession(currSession);
         res.status(200).send(updated);
       }
       catch (err){

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getPlayer, getSession } = require('../services/utilities');
+const { getPlayer, getSession, updateSession } = require('../services/utilities');
 const cardDrawService = require('../services/cardDrawService');
 
 router.post('/playcard', async function (req, res) {
@@ -41,6 +41,7 @@ router.post('/playcard', async function (req, res) {
 
   player.removeCard(cardIndex);
   table.addCardTop(card);
+  await updateSession(session);
   res.status(200).send(session);
 
 });
@@ -66,7 +67,9 @@ router.post('/drawcard', async function (req, res) {
       } else if (!player) {
           res.status(400).send(`Invalid request. Could not find player with Id ${playerId} in session ${sessionId}.`);
       } else {
-          res.status(200).send(cardDrawService.drawCards(deck, numOfCards, player));
+          const updatedCards = cardDrawService.drawCards(deck, numOfCards, player);
+          await updateSession(currSession);
+          res.status(200).send(updatedCards);
       }
     }
   }

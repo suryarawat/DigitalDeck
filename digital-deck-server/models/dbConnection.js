@@ -23,11 +23,14 @@ if (password != '') {
     console.log('password found!');
 }
 
-const uri = "mongodb+srv://app:" + password + "@dd.mkxa1.mongodb.net/DD?retryWrites=true&w=majority";
-const client = new MongoClient(uri);
+async function getDB(){
+    const uri = "mongodb+srv://app:" + password + "@dd.mkxa1.mongodb.net/DD?retryWrites=true&w=majority";
+    const client = new MongoClient(uri);
+    const connection = await client.connect();
+    const database = client.db('DD');
+    const sessionData = database.collection('sessions');
+    return sessionData;
+}
 
-const connection = client.connect();
-const database = client.db('DD');
-const sessionData = database.collection('sessions');
-module.exports = sessionData;
+module.exports = {getDB};
 
