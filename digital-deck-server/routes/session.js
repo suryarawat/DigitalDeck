@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Session = require('../models/session');
-const {getConcSessions , addSession, getSession} = require('../services/utilities');
+const {getConcSessions, addSession, getSession, cleanSession, updateSession} = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 
 // /newsession
@@ -27,9 +27,10 @@ router.post('/new', async function (req, res) {
       if (cardsPerPlayer * players + cardsOnTable > 52 * decks) {
         res.status(400).send('Invalid request. Cannot distribute more than number of available cards');
       } else {
-        currSession = new Session(decks, players, cardsPerPlayer, cardsOnTable);
+        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable);
         currSession.players[0].setName(name);
-        addSession(currSession);
+        await addSession(currSession);
+        cleanSession(currSession);
         res.status(200).send(currSession);
       }
     }
@@ -37,7 +38,7 @@ router.post('/new', async function (req, res) {
 
 // for test
 router.get('/info', async function(req, res) {
-    res.status(200).json(getConcSessions());
+    res.status(200).json( await getConcSessions());
 });
 
 // Get session based on id
@@ -47,8 +48,8 @@ router.get('/current', async function(req, res) {
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call, needs a valid session id.');
   } else {
-    let session = getSession(sessionId);
-    if (!session) {
+    let session = await getSession(sessionId);
+    if (!session || session == {}) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
       res.status(200).json(session);
@@ -62,7 +63,7 @@ router.post('/shufflecards', async function (req, res) {
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
-    let currSession = getSession(sessionId);
+    let currSession = await getSession(sessionId);
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
@@ -70,6 +71,7 @@ router.post('/shufflecards', async function (req, res) {
         let deck = currSession.deck;
         const updated =  cardShuffleService.shuffleCards(deck);
         currSession.deck = updated;
+        await updateSession(currSession);
         res.status(200).send(updated);
       }
       catch (err){
