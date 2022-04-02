@@ -14,7 +14,7 @@ app.use(express.static('../digital-deck-ui'));
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000"
+    origin: client_url
   }
 });
 const port = 5000;

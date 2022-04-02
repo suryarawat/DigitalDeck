@@ -13,7 +13,7 @@ npm install
 ```
 2. Go the directory containing index.js file and run the following command in terminal:
 ```sh
-node index.js
+npm run dev
 ```
 - Server is listening on port 5000
-- to test the query run ```https://localhost:5000/newquery```
+- To test the queries run ```http://localhost:5000```

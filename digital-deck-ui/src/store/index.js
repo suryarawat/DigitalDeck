@@ -1,8 +1,7 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 import UnitTests from './../scripts/UnitTests.js';
-
-const URL = 'http://localhost:5000';
+import { api_url } from "./../App.vue";
 
 export default createStore({
     state: {
@@ -13,7 +12,6 @@ export default createStore({
         numCardsInDeck: -1,
         name: "",
         playersInfo: [], //other players name and number of cards
-        gameStarted : false,
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -54,15 +52,10 @@ export default createStore({
 
         },
 
-        setGameInfo(state, value) {
-            state.gameStarted = value;
-        },
-
-
     },
     actions: {
         initSession({ commit, state }, sessionData) {
-            return axios.post(URL + '/session/new', {
+            return axios.post(api_url + '/session/new', {
                 decks: sessionData.decks,
                 players: 1, 
                 name: sessionData.name,
@@ -111,7 +104,7 @@ export default createStore({
             let oldPlayerCards = state.playerCards;
             let oldCardsInDeck = state.numCardsInDeck;
 
-            axios.post(URL + '/player/drawcard', {
+            axios.post(api_url + '/player/drawcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 numOfCards: 1
@@ -123,7 +116,7 @@ export default createStore({
         },
 
         playCards({ commit, state }, payload) {
-            axios.post(URL + '/player/playcard', {
+            axios.post(api_url + '/player/playcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
                 cardIndex: payload.index,
@@ -180,9 +173,6 @@ export default createStore({
 
         getPlayersInfo(state) {
             return state.playersInfo;
-        },
-        getGameInfo(state) {
-            return state.gameStarted;
         },
     }
 });

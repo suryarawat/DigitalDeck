@@ -104,8 +104,7 @@ export default {
       cardsOnTable: "",
       createForm: false,
       joinForm: false,
-      name: "",
-      errors:[]
+      name: ""
     };
   },
   components: {
@@ -114,13 +113,13 @@ export default {
   created() {
     let currId = $cookies.get("SessionId");
     if (currId != null && currId != -1) {
-      this.$store
-        .dispatch("retrieveSession", {
-          sessionId: currId,
-        })
-        .finally(() => {
+        var success = this.$store
+          .dispatch("retrieveSession", {
+            sessionId: currId,
+          });
+        if (success) {
           this.isLoaded = true;
-        });
+        }
     } else {
       $cookies.set("SessionId", -1, "1h");
     }

@@ -1,3 +1,7 @@
-import io from 'socket.io-client'
-const socket = io('http://localhost:5000')
+import io from 'socket.io-client';
+import { api_url } from './App.vue';
+
+const socket = io(api_url, {
+  transports: ["websocket"]
+});
 export default socket

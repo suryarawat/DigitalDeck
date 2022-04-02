@@ -10,7 +10,7 @@ const cardDistService = require('../services/cardDistService');
 router.post('/new', async function (req, res) { 
     // process request make a new session involving only 1 player and dont distribute.
     var decks = Number(req.body.decks);
-    var players = Number(req.body.players); //1 Player made initially.
+    var players = Number(req.body.players);
     var name = req.body.name;
     var cardsPerPlayer = Number(req.body.cardsPerPlayer);
     var cardsOnTable = Number(req.body.cardsOnTable);

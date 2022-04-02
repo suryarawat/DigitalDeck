@@ -5,6 +5,11 @@
 <script>
 import MainMenu from "./components/MainMenu.vue";
 
+export let api_url =  "http://localhost:5000";
+if ( process.env.NODE_ENV === 'production'){
+    api_url = 'http://34.132.36.123:5000';
+}
+
 export default {
   name: "app",
   components: {
