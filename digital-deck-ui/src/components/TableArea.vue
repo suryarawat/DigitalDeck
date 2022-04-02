@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="table-area">
     <div
       v-for="(card, index) in this.$store.getters.getTableCards"
       :key="card"
@@ -44,3 +44,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-area {
+  height: 100%;
+}
+</style>

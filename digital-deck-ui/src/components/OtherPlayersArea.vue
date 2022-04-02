@@ -1,11 +1,9 @@
 <template>
   <div class="other-players-area">
-    <div v-for="player in otherPlayers">
-      <div class="player-info">
-        <span class="names">{{player.playerName}}</span>
+    <div class="player-info" v-for="player in playersList">
+        <span class="names">{{player.name}}</span>
         <br/>
-        <span class="cards">{{player.cards}} X </span><img :src="cardImage()"/>
-      </div>
+        <span class="cards">{{player.numOfCards}} X </span><img :src="cardImage()"/>
     </div>
   </div>
 </template>
@@ -15,25 +13,12 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "other-players-area",
-  data:  () => {
-    return {otherPlayers: [
-      {'playerName': 'Player 1', 'cards': 5},
-      {'playerName': 'Player 2', 'cards': 8},
-      {'playerName': 'Player 3', 'cards': 2},
-      {'playerName': 'Player 4', 'cards': 6},
-      {'playerName': 'Player 5', 'cards': 3},
-      {'playerName': 'Plawerwwerwewrewerwerwerrwerwerwerwererwrewrewrwyer 1', 'cards': 5},
-      {'playerName': 'Player 2', 'cards': 8},
-      {'playerName': 'Player 3', 'cards': 2},
-      {'playerName': 'Player 4', 'cards': 6},
-      {'playerName': 'Player 1', 'cards': 5},
-      {'playerName': 'Player 2', 'cards': 8},
-      {'playerName': 'Player 3', 'cards': 2},
-      {'playerName': 'Player 4', 'cards': 6},
-      {'playerName': 'Player 5', 'cards': 3}
-    ]}
+  computed:{
+    // filters this player
+    playersList : function(){
+      return this.$store.getters.getPlayersInfo.filter(player => player.name != this.$store.getters.getName)
+    }
   },
-
   methods: {
     cardImage() {
       return CardDeckImageEnum.BACK.ONE;
@@ -53,8 +38,11 @@ export default {
   top: 3%;
   left: 2%;
   width: 100%;
-  position: fixed;
+  height: 150px;
   font-size: 20px;
+  overflow: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 
 img{
@@ -77,6 +65,6 @@ img{
 
  .player-info{
     float: left;
-    padding-right: 50px;
+    padding-right: 30px;
  }
 </style>
