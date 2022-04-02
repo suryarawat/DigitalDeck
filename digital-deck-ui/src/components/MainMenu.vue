@@ -175,7 +175,6 @@ export default {
     },
 
     async joinRoomForm() {
-      this.errors = [];
       if (this.roomid!=null   ) {
             this.$store.dispatch("joinSession", {
             sessionId: this.roomid,

@@ -71,7 +71,7 @@ export default createStore({
             }).catch((err) => console.log(err));
         },
         joinSession({ commit, state }, sessionData) {
-            return axios.post(URL + '/session/join', {
+            return axios.post(api_url + '/session/join', {
                 name: sessionData.name,
                 sessionId: sessionData.sessionId,
             }).then((res) => {
@@ -85,7 +85,7 @@ export default createStore({
         },
 
         retrieveSession({ commit, state }, id) {
-            return axios.get(URL + '/session/current', {
+            return axios.get(api_url + '/session/current', {
                 params: { sessionId: id.sessionId }
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
@@ -128,10 +128,9 @@ export default createStore({
 
         },
         distributeCards({ commit, state }, payload) {
-            axios.post(URL + '/session/distributecards', {
+            axios.post(api_url + '/session/distributecards', {
                 sessionId: state.sessionId,
             }).then((res) => {
-                commit('setGameInfo', true);
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck);

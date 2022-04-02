@@ -7,6 +7,13 @@ const sessionRoute = require('./routes/session');
 const playerRoute = require('./routes/player');
 const {handleSocket} = require('./socket');
 
+var client_url = "http://localhost:3000";
+
+if (process.env.NODE_ENV == 'production') {
+  client_url = "http://35.192.81.46:3000";
+  console.log(client_url);
+}
+
 const app = express();
 
 app.use(express.static('../digital-deck-ui')); 
