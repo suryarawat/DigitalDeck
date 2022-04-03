@@ -39,6 +39,13 @@
           <label>Cards on table</label>
         </div>
 
+          <div class="number-box">
+            <input v-model="name"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
+          </div>  
           <button class="button" @click="submitForm">Start</button>
       </div>
 

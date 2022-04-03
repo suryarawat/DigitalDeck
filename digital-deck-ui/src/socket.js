@@ -4,4 +4,4 @@ import { api_url } from './App.vue';
 const socket = io(api_url, {
   transports: ["websocket"]
 });
-export default socket
+export default socket;

@@ -3,7 +3,7 @@
     <div class="player-info" v-for="player in playersList">
         <span class="names">{{player.name}}</span>
         <br/>
-        <span class="cards">{{player.numOfCards}} X </span><img :src="cardImage()"/>
+        <span class="cards">{{player.numCards}} X </span><img :src="cardImage()"/>
     </div>
   </div>
 </template>
@@ -13,6 +13,11 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "other-players-area",
+  mounted() {
+    this.$socket.on("updateOtherPlayersInfo", ({name, numCards}) => {
+      this.$store.commit('setPlayerInfo', {name:name, numCards:numCards});
+    })
+  },
   computed:{
     // filters this player
     playersList : function(){

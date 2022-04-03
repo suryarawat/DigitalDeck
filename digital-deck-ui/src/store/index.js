@@ -44,10 +44,18 @@ export default createStore({
             state.name = name;
         },
 
+        setPlayerInfo(state, player) {
+            for (var i = 0; i < state.playersInfo.length; i++) {
+                if (state.playersInfo[i].name === player.name) {
+                    state.playersInfo[i].numCards = player.numCards;
+                }
+            }
+        },
+
         setPlayersInfo(state, players) {
             state.playersInfo = [];
             for (var i = 0; i < players.length; i++) {
-                var obj = { name: players[i].name, numOfCards: players[i].cards.length };
+                var obj = { name: players[i].name, numCards: players[i].cards.length };
                 state.playersInfo.push(obj);
             }
 
@@ -120,7 +128,7 @@ export default createStore({
             return axios.post(api_url + '/player/drawcard', {
                 sessionId: state.sessionId,
                 playerId: state.playerId,
-                numOfCards: 1
+                numCards: 1
             }).then((res) => {
                 commit('setPlayerCards', res.data.cards);
                 commit('setCardsInDeck', res.data.deck.length);
