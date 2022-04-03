@@ -54,6 +54,7 @@ export default {
 
   this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
   this.$socket.on("PlayerJoined", (session) => {
+      console.log('signal recieved');
       this.$store.dispatch("updatePlayerInfo", {
             sessionId: this.$store.getters.getSessionId,
             players: session.players
