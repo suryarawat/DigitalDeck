@@ -3,6 +3,7 @@ const Session = require('../models/session');
 const {getConcSessions, addSession, getSession, cleanSession, updateSession} = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 var Player = require("../models/player.js");
+var Table = require("../models/table.js");
 const cardDistService = require('../services/cardDistService');
 
 
@@ -100,8 +101,10 @@ router.post('/distributecards', async function (req, res) {
           currSession.cardsOnTable,
           currSession.players
         ); 
-        currSession.table= distributed.table;
+        currSession.table= new Table(distributed.table.cards);
+        console.log(currSession.table);
         currSession.deck= distributed.deck;
+        await updateSession(currSession);
         res.status(200).send(currSession);
       }
       catch (err){
@@ -126,9 +129,10 @@ router.post('/join', async function (req, res) {
     } else {
       try {
         if (!currSession.gameStarted) {
-          let newPlayer = new Player([],name ); //new player made
+          let newPlayer = Player.build([],name, currSession.players.length); //new player made
           currSession.players.push(newPlayer);
           currSession.numPlayers++;
+          await updateSession(currSession);
           //playerid is updated with zero cards..
           res.status(200).send(currSession);
         }

@@ -1,4 +1,4 @@
-const { getConcSessions, addSession, getSession, getPlayers } = require('../digital-deck-server/services/utilities');
+const { getConcSessions, addSession, getSession, getPlayerNames } = require('../digital-deck-server/services/utilities');
 
 function handleSocket(io) {
     io.on("connection", (socket) => { 

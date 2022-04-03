@@ -156,6 +156,7 @@ export default createStore({
             commit('setSessionId', sessionData.sessionId);
             commit('setPlayersInfo', sessionData.players);
             $cookies.set('SessionId', sessionData.sessionId, '1h');
+            console.log(sessionData.players);
         }
     },
     getters: {

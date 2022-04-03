@@ -68,6 +68,7 @@ router.post('/drawcard', async function (req, res) {
           res.status(400).send(`Invalid request. Could not find player with Id ${playerId} in session ${sessionId}.`);
       } else {
           const updatedCards = cardDrawService.drawCards(deck, numOfCards, player);
+          currSession.deck = updatedCards.deck;
           await updateSession(currSession);
           res.status(200).send(updatedCards);
       }

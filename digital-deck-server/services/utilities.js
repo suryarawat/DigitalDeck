@@ -11,8 +11,8 @@ let sessionData;
  * @return [array of {json} ] The array of json containing information of all sessions
  */
 function cleanSession(session) {
-    session.players.forEach((player) => Object.assign(new Player(), player));
-    session.table = Object.assign(new Table(), session.table);
+    session.players.forEach((player, index) => session.players[index] = convertToPlayer(player));
+    session.table = convertToTable(session.table);
     delete session._id;
 }
 
@@ -27,6 +27,7 @@ async function updateSession(session) {
         {
             sessionData = await getDB();
         }
+        console.log(session);
         sessionData.replaceOne(query, session);
     }
 }
@@ -49,9 +50,6 @@ async function getConcSessions()
     var sessions = [];
     const cursor = await sessionData.find();
     sessions = await cursor.toArray();
-    sessions.forEach(session => {
-        session = cleanSession(session);
-    });
     return sessions;
 }
 
@@ -116,11 +114,47 @@ async function getSession(id)
         }
         const query = {sessionId: id};
         const session = await sessionData.findOne(query);
-        session.players.forEach((player) => Object.assign(new Player(), player));
-        session.table = Object.assign(new Table(), session.table);
-        return session;        
+        return convertToSession(session);        
     }
+}
 
+function convertToSession(session) {
+    try{
+        let sessionCopy = new Session(session.numDecks, session.numPlayers, session.cardsPerPlayer, session.cardsOnTable, session.sessionId);
+        sessionCopy.players = session.players;
+        sessionCopy.deck = session.deck;
+        sessionCopy.players.forEach((player, index) => {
+            sessionCopy.players[index] = convertToPlayer(player);
+        });
+        sessionCopy.table = convertToTable(session.table);
+        return sessionCopy;
+    }
+    catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+
+function convertToPlayer(player) {
+    try{
+        let playerCopy = new Player(player.cards, player.name, player.playerId);
+        return playerCopy;
+    }
+    catch (err) {
+        console.log(err);
+        return null;
+    }
+}
+
+function convertToTable(table) {
+    try{
+        let tableCopy = new Table(table.cards);
+        return tableCopy;
+    }
+    catch (err) {
+        console.log(err);
+        return null;
+    }
 }
 
 /**
@@ -138,7 +172,7 @@ function getPlayer(session, id)
     else
     {
         const player = session.players.find(player => player.playerId === id);
-        return Object.assign(new Player(), player);
+        return convertToPlayer(player);
     }
 }
 
@@ -147,7 +181,7 @@ function getPlayer(session, id)
  * 
  * @param session the session in which to find the player
  */
- function getPlayers(session)
+ function getPlayerNames(session)
  {  let nameArray = [];
     let players = session.players;
     for (let i = 0 ; i<players.length;i++){
@@ -156,4 +190,4 @@ function getPlayer(session, id)
     return nameArray;
  }
 
-module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer, getPlayers, cleanSession, updateSession};
+module.exports = {getConcSessions, clearConcSessions, addSession, getSession, getPlayer, getPlayerNames, cleanSession, updateSession};
