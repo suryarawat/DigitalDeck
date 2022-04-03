@@ -12,6 +12,7 @@ export default createStore({
         numCardsInDeck: 0,
         name: "",
         playersInfo: [], //other players name and number of cards
+        gameStarted : false,
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -51,6 +52,10 @@ export default createStore({
             }
 
         },
+        
+        setGameInfo (state, info) {
+            state.gameStarted = info;
+        },
 
     },
     actions: {
@@ -75,12 +80,20 @@ export default createStore({
                 name: sessionData.name,
                 sessionId: sessionData.sessionId,
             }).then((res) => {
-                commit('setSessionId', res.data.sessionId);
-                commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
-                commit('setName', res.data.players[res.data.players.length - 1].name);
-                commit('setPlayersInfo', res.data.players);
-                $cookies.set('SessionId', res.data.sessionId, '1h');
-                UnitTests.testInitSession(state);
+                if (res.status==200) {
+                    commit('setSessionId', res.data.sessionId);
+                    commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
+                    commit('setName', res.data.players[res.data.players.length - 1].name);
+                    commit('setPlayersInfo', res.data.players);
+                    $cookies.set('SessionId', res.data.sessionId, '1h');
+                    UnitTests.testInitSession(state);
+                }
+                else {
+
+                    commit('setGameInfo', true);
+
+                }
+                
             }).catch((err) => console.log(err));
         },
 
@@ -122,7 +135,7 @@ export default createStore({
                 cardIndex: payload.index,
                 card: payload.card,
             }).then((res) => {
-                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
             }).catch((err) => console.log(err));
 
@@ -172,6 +185,9 @@ export default createStore({
 
         getPlayersInfo(state) {
             return state.playersInfo;
+        },
+        getGameInfo(state) {
+            return state.gameStarted;
         },
     }
 });

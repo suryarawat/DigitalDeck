@@ -173,14 +173,19 @@ export default {
     },
 
     async joinRoomForm() {
-      if (this.roomid!=null   ) {
+      if (this.roomid!=null    ) {
             this.$store.dispatch("joinSession", {
             sessionId: this.roomid,
             name: this.joinname,
           })
           .then(() => {
             //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             if (this.$store.getters.getGameInfo) {
+               console.log("You cant join fuck off");
+             }
+             else {
              this.isLoaded = true;
+             }
           });
       }        
       else {

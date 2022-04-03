@@ -1,6 +1,7 @@
 <template>
   <div>
  <h1 v-if="!isLoaded" class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
+ 
 
     <button
       v-if="!isLoaded"
@@ -72,6 +73,7 @@ export default {
             sessionId: this.$store.getters.getSessionId
           }).then(() => {
              this.$socket.emit('gameStarted', this.$store.getters.getSessionId);
+
              this.isLoaded = true;
           });
     },

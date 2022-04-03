@@ -15,8 +15,9 @@ function handleSocket(io) {
         });
 
         socket.on('gameStarted', (sessionId) => {
-            let session = getSession(sessionId);
+            let session =  getSession(sessionId);
             console.log("game Started for a player");
+            session.gameStarted = true;
             // emit to others which are in the same room
             setTimeout(() => socket.to(sessionId).emit("launchGame", session)
                 , 1000);

@@ -16,8 +16,10 @@ module.exports = class Session {
     this.deck=[];
     this.cardsPerPlayer = cardsPerPlayer;
     this.cardsOnTable= cardsOnTable;
+    this.gameStarted = false;
     Player.resetPlayerCount();
     let newPlayer = new Player([], "");
+    newPlayer.isHost=true;
     this.players.push(newPlayer);
   }
   // updates Deck when shuffleCard Service is called

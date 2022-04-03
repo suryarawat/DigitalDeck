@@ -123,11 +123,14 @@ router.post('/join', async function (req, res) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
       try {
-        let newPlayer = new Player([],name ); //new player made
-        currSession.players.push(newPlayer);
-        currSession.numPlayers++;
-        //playerid is updated with zero cards..
-        res.status(200).send(currSession);
+        if (!currSession.gameStarted) {
+          let newPlayer = new Player([],name ); //new player made
+          currSession.players.push(newPlayer);
+          currSession.numPlayers++;
+          //playerid is updated with zero cards..
+          res.status(200).send(currSession);
+        }
+        
       }
       catch (err){
         console.log(err);
