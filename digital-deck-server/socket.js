@@ -40,13 +40,10 @@ function handleSocket(io) {
             socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
-
-    })
-
-
-
-
-
+        socket.on("endTurn", ({sessionId, playerId}) => {
+            socket.to(sessionId).emit("setTurn", {playerId: ++playerId})
+        });
+    });
 }
 
 

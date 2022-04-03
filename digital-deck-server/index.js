@@ -5,6 +5,7 @@ const http = require("http");
 const { Server } = require('socket.io');
 const sessionRoute = require('./routes/session');
 const playerRoute = require('./routes/player');
+const blackjackRoute = require('./routes/blackjack');
 const {handleSocket} = require('./socket');
 
 var client_url = "http://localhost:3000";
@@ -33,6 +34,7 @@ app.use(bodyParser.json());
 
 app.use('/session', sessionRoute);
 app.use('/player', playerRoute);
+app.use('/blackjack', blackjackRoute);
 
 if (process.env.NODE_ENV !== 'test') {
   httpServer.listen(port);
