@@ -9,9 +9,8 @@ function handleSocket(io) {
             console.log("Room joined");
             socket.join(sessionId);
             // emit to others which are in the same room
-            setTimeout(() => socket.to(sessionId).emit("PlayerJoined", session)
-                , 1000);
-
+            console.log("Emitting to: "+sessionId);
+            socket.to(sessionId).emit("PlayerJoined", session);
         });
 
         socket.on('gameStarted', async (sessionId) => {
@@ -19,9 +18,7 @@ function handleSocket(io) {
             console.log("game Started for a player");
             session.gameStarted = true;
             // emit to others which are in the same room
-            setTimeout(() => socket.to(sessionId).emit("launchGame", session)
-                , 1000);
-
+            socket.to(sessionId).emit("launchGame", session);           
         });
 
         socket.on('disconnect', () => {
