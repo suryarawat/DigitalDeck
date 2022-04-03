@@ -8,22 +8,29 @@ var Table = require("./table.js");
  */
 module.exports = class Session {
   // Keeps track of distinct game sessions
+  static id = 0;
   static async findUniqueSessionId(){
     var maxSession = 0;
     var sessions = [];
-    const sessionData = await getDB();
-    const cursor = await sessionData.find();
-    sessions = await cursor.toArray();
+    if (process.env.NODE_ENV != 'test') {
+      const sessionData = await getDB();
+      const cursor = await sessionData.find();
+      sessions = await cursor.toArray();
 
-    if (!sessions || sessions.length == 0) {
-      return 0;
+      if (!sessions || sessions.length == 0) {
+        return 0;
+      }
+      sessions.forEach(session => {
+        const id = Number(session.sessionId);
+        maxSession = Math.max(maxSession, id);
+      });
+
+      maxSession = Number(maxSession) + 1;
+      return maxSession;
     }
-    sessions.forEach(session => {
-      const id = Number(session.sessionId);
-      maxSession = Math.max(maxSession, id);
-    });
-    maxSession = Number(maxSession) + 1;
-    return maxSession;
+    else {
+      return Session.id++;
+    }
   }
 
   static async build(decks, players, cardsPerPlayer, cardsOnTable){
