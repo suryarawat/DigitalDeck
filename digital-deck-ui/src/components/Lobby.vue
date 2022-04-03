@@ -1,10 +1,10 @@
 <template>
   <div>
- <h1 v-if="!isLoaded" class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
- 
+ <h1 v-if="!isLoaded"  class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
+
 
     <button
-      v-if="!isLoaded"
+      v-if="!isLoaded && this.$store.getters.getPlayerId===0"  
       class="button"
       @click="loadGame()"
       style="
