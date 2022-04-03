@@ -26,7 +26,7 @@ export default {
   methods: {
     cardImage(card) {
       return card > 0
-        ? CardDeckImageEnum.FRONT[card - 1]
+        ? CardDeckImageEnum.FRONT[(card - 1) % 52]
         : CardDeckImageEnum.BACK.DEFAULT;
     },
 
@@ -34,6 +34,15 @@ export default {
       this.$store.dispatch("playCards", {
         card: card,
         index: index,
+      }).then(() => {
+        this.$socket.emit("playCard", {
+          sessionId: this.$store.getters.getSessionId,
+          cardsOnTable: this.$store.getters.getTableCards,
+          player: { // for player card display synchronization
+            id: this.$store.getters.getPlayerId,
+            numCards: this.$store.getters.getPlayerCards.length
+          }
+        });
       });
     },
 

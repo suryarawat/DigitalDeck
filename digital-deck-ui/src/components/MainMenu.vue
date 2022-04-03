@@ -1,11 +1,12 @@
 <template>
   <div>
-    <div v-if="!isLoaded" class="main-menu">
+    <div v-show="!isLoaded" class="main-menu">
       <h1 class="heading">Digital Deck</h1>
       <button class="button" v-on:click="toggleCreateForm()">Create</button>
       <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
       <div v-if="createForm" class="input-form">
+
           <div class="number-box">
             <input
               v-model.number="deckSelected"
@@ -17,38 +18,40 @@
             <label>Number of Decks</label>
           </div>
 
-          <div class="number-box">
-            <input
-              v-model.number="cardsPerPlayer"
-              type="number"
-              min="0"
-              oninput="validity.valid||(value='');"
-              required=""
-            />
-            <label>Cards on hand</label>
-          </div>
-
-          <div class="number-box">
-            <input
-              v-model.number="cardsOnTable"
-              type="number"
-              min="0"
-              oninput="validity.valid||(value='');"
-              required=""
-            />
-            <label>Cards on table</label>
-          </div>
-
-          <div class="number-box">
-            <input v-model="name"
-            type="text"
+        <div class="number-box">
+          <input
+            v-model.number="cardsPerPlayer"
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
             required=""
-            />
-            <label>Name</label>
-          </div>
+          />
+          <label>Cards on hand</label>
+        </div>
 
-          <button class="button" @click="submitForm">Start</button>
+        <div class="number-box">
+          <input
+            v-model.number="cardsOnTable"
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
+            required=""
+          />
+          <label>Cards on table</label>
+        </div>
+
+        <div class="number-box">
+          <input v-model="name"
+          type="text"
+          required=""
+          />
+          <label>Name</label>
+        </div>
+
+        <button class="button" @click="submitForm">Start</button>
       </div>
+
+
 
       <div v-if="joinForm" class="input-form">
         <div class="number-box">
@@ -106,18 +109,17 @@ export default {
     };
   },
   components: {
-    Lobby,
+    Lobby
   },
   created() {
     let currId = $cookies.get("SessionId");
     if (currId != null && currId != -1) {
-        var success = this.$store
+        this.$store
           .dispatch("retrieveSession", {
             sessionId: currId,
+          }).then(() => {
+            this.isLoaded = true;
           });
-        if (success) {
-          this.isLoaded = true;
-        }
     } else {
       $cookies.set("SessionId", -1, "1h");
     }
@@ -154,7 +156,6 @@ export default {
       if (!isFormCorrect) {
         return;
       } else {
-
         this.$store
           .dispatch("initSession", {
             decks: this.deckSelected,

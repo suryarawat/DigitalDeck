@@ -5,7 +5,7 @@ function handleSocket(io) {
         console.log("Connected");
         socket.emit("hello-world"); 
         socket.on('joinRoom', (sessionId) => {
-            let session = getSession(sessionId);
+            let session = await getSession(sessionId);
             console.log("Room joined");
             socket.join(sessionId);
             // emit to others which are in the same room
@@ -15,7 +15,7 @@ function handleSocket(io) {
         });
 
         socket.on('gameStarted', (sessionId) => {
-            let session =  getSession(sessionId);
+            let session = await getSession(sessionId);
             console.log("game Started for a player");
             session.gameStarted = true;
             // emit to others which are in the same room
@@ -23,6 +23,19 @@ function handleSocket(io) {
                 , 1000);
 
         });
+
+        socket.on('disconnect', () => {
+            console.log("Disconnected");
+        });
+
+        socket.on('drawCard', ({ sessionId, numCards, player }) => {
+            socket.to(sessionId).emit('cardDrawn', { deck: numCards, player: player });
+        });
+
+        socket.on("playCard", ({ sessionId, cardsOnTable, player }) => {
+            socket.to(sessionId).emit("cardPlayed", { table: { cards: cardsOnTable }, player: player });
+        });
+
 
     })
 

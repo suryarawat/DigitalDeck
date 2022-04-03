@@ -22,10 +22,15 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "table-area",
+  created() {
+    this.$socket.on("cardPlayed", ({ table, player }) => {
+      this.$store.commit("setTableCards", table);
+    });
+  },
   methods: {
     cardImage(card) {
       return card > 0
-        ? CardDeckImageEnum.FRONT[card - 1]
+        ? CardDeckImageEnum.FRONT[(card - 1) % 52]
         : CardDeckImageEnum.BACK.DEFAULT;
     },
 
