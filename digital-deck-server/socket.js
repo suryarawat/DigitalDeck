@@ -10,9 +10,8 @@ function handleSocket(io) {
             console.log("Room joined");
             socket.join(sessionId);
             // emit to others which are in the same room
-            setTimeout(() => socket.to(sessionId).emit("PlayerJoined", session)
-                , 1000);
-
+            console.log("Emitting to: "+sessionId);
+            socket.to(sessionId).emit("PlayerJoined", session);
         });
 
         socket.on('gameStarted', async (sessionId) => {
