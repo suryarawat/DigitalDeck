@@ -88,7 +88,7 @@ router.post('/distributecards', async function (req, res) {
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
-    let currSession = getSession(sessionId);
+    let currSession = await getSession(sessionId);
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
@@ -120,7 +120,7 @@ router.post('/join', async function (req, res) {
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
-    let currSession = getSession(sessionId);
+    let currSession = await getSession(sessionId);
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
