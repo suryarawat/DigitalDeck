@@ -27,7 +27,6 @@ async function updateSession(session) {
         {
             sessionData = await getDB();
         }
-        console.log(session);
         sessionData.replaceOne(query, session);
     }
 }

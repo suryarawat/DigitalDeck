@@ -182,7 +182,7 @@ export default {
           .then(() => {
             //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
              if (this.$store.getters.getGameInfo) {
-               console.log("You cant join fuck off");
+               console.log("You cant join");
              }
              else {
              this.isLoaded = true;

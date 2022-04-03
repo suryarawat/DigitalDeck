@@ -102,7 +102,6 @@ router.post('/distributecards', async function (req, res) {
           currSession.players
         ); 
         currSession.table= new Table(distributed.table.cards);
-        console.log(currSession.table);
         currSession.deck= distributed.deck;
         await updateSession(currSession);
         res.status(200).send(currSession);

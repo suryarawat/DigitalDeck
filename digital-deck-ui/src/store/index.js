@@ -32,7 +32,7 @@ export default createStore({
         },
 
         setCardsInDeck(state, deck) {
-            state.numCardsInDeck = deck.length;
+            state.numCardsInDeck = deck;
         },
 
         flipCard(state, card) {
@@ -103,9 +103,9 @@ export default createStore({
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', state.playerId);
-                 commit('setPlayerCards', res.data.players[state.playerId].cards);
-                 commit('setTableCards', res.data.table);
-                 commit('setCardsInDeck', res.data.deck);
+                commit('setPlayerCards', res.data.players[state.playerId].cards);
+                commit('setTableCards', res.data.table);
+                commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
@@ -123,7 +123,7 @@ export default createStore({
                 numOfCards: 1
             }).then((res) => {
                 commit('setPlayerCards', res.data.cards);
-                commit('setCardsInDeck', res.data.deck);
+                commit('setCardsInDeck', res.data.deck.length);
                // UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
             }).catch((err) => console.log(err));
         },
@@ -146,7 +146,7 @@ export default createStore({
             }).then((res) => {
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
-                commit('setCardsInDeck', res.data.deck);
+                commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
             }).catch((err) => console.log(err));
@@ -156,7 +156,6 @@ export default createStore({
             commit('setSessionId', sessionData.sessionId);
             commit('setPlayersInfo', sessionData.players);
             $cookies.set('SessionId', sessionData.sessionId, '1h');
-            console.log(sessionData.players);
         }
     },
     getters: {
