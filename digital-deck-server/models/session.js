@@ -1,24 +1,36 @@
 var cardDistService = require('../services/cardDistService');
+const { getDB } = require('./dbConnection');
 var Player = require("./player.js");
-const {getConcSessions} = require('../services/utilities');
+var Table = require("./table.js");
 
 /**
  * Class that creates and manages a game session
  */
 module.exports = class Session {
   // Keeps track of distinct game sessions
+  static id = 0;
   static async findUniqueSessionId(){
     var maxSession = 0;
-    var allSessions = await getConcSessions();
-    if (!allSessions || allSessions.length == 0) {
-      return 0;
+    var sessions = [];
+    if (process.env.NODE_ENV != 'test') {
+      const sessionData = await getDB();
+      const cursor = await sessionData.find();
+      sessions = await cursor.toArray();
+
+      if (!sessions || sessions.length == 0) {
+        return 0;
+      }
+      sessions.forEach(session => {
+        const id = Number(session.sessionId);
+        maxSession = Math.max(maxSession, id);
+      });
+
+      maxSession = Number(maxSession) + 1;
+      return maxSession;
     }
-    allSessions.forEach(session => {
-      const id = Number(session.sessionId);
-      maxSession = Math.max(maxSession, id);
-    });
-    maxSession = Number(maxSession) + 1;
-    return maxSession;
+    else {
+      return Session.id++;
+    }
   }
 
   static async build(decks, players, cardsPerPlayer, cardsOnTable){
@@ -30,19 +42,16 @@ module.exports = class Session {
     this.numDecks = decks;
     this.numPlayers = players;
     this.sessionId = Number(sessionId);
-    // new player ids
+    this.players =[];
+    this.table = new Table([]);
+    this.deck=[];
+    this.cardsPerPlayer = cardsPerPlayer;
+    this.cardsOnTable= cardsOnTable;
+    this.gameStarted = false;
     Player.resetPlayerCount();
-    // initial card distribution
-    let assignments = cardDistService.distCards(
-      decks,
-      players,
-      cardsPerPlayer,
-      cardsOnTable
-    );
-
-    this.players = assignments.players;
-    this.table = assignments.table;
-    this.deck = assignments.deck;
+    let newPlayer = new Player([], "", 0);
+    newPlayer.isHost=true;
+    this.players.push(newPlayer);
   }
   // updates Deck when shuffleCard Service is called
   updateDeck(newDeck) {

@@ -51,12 +51,21 @@
         <button class="button" @click="submitForm">Start</button>
       </div>
 
+
+
       <div v-if="joinForm" class="input-form">
         <div class="number-box">
-          <input type="number" required="" />
+          <input v-model="roomid" oninput="validity.valid||(value='');" type="number" required="" />
           <label>Enter ID</label>
         </div>
-        <button class="button">Join</button>
+        <div class="number-box">
+            <input v-model="joinname"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
+          </div>
+        <button class="button" @click="joinRoomForm">Join</button>
       </div>
 
       <p v-for="error of v$.$errors" :key="error.$uid">
@@ -153,9 +162,35 @@ export default {
             name: this.name,
             cardsPerPlayer: this.cardsPerPlayer,
             cardsOnTable: this.cardsOnTable,
-          }).then(() => {
+          })
+          .then(() => {
+          // this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
             this.isLoaded = true;
+            
           });
+
+      }
+
+    },
+
+    async joinRoomForm() {
+      if (this.roomid!=null    ) {
+            this.$store.dispatch("joinSession", {
+            sessionId: this.roomid,
+            name: this.joinname,
+          })
+          .then(() => {
+            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             if (this.$store.getters.getGameInfo) {
+               console.log("You cant join");
+             }
+             else {
+             this.isLoaded = true;
+             }
+          });
+      }        
+      else {
+      console.log("Wrong room id enter again ");
       }
     },
 

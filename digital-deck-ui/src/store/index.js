@@ -9,9 +9,10 @@ export default createStore({
         playerId: -1,
         playerCards: null,
         tableCards: null,
-        numCardsInDeck: -1,
+        numCardsInDeck: 0,
         name: "",
-        playersInfo: [] //other players name and number of cards
+        playersInfo: [], //other players name and number of cards
+        gameStarted : false,
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -39,17 +40,21 @@ export default createStore({
             state.tableCards[index] = -1 * state.tableCards[index];
         },
 
-        setName(state, name){  
+        setName(state, name) {
             state.name = name;
         },
 
-        setPlayersInfo(state, players){
-            for(var i = 0; i < players.length; i++)
-            {
-                var obj = { name: players[i].name, numOfCards: players[i].cards.length};
+        setPlayersInfo(state, players) {
+            state.playersInfo = [];
+            for (var i = 0; i < players.length; i++) {
+                var obj = { name: players[i].name, numOfCards: players[i].cards.length };
                 state.playersInfo.push(obj);
             }
 
+        },
+        
+        setGameInfo (state, info) {
+            state.gameStarted = info;
         },
 
     },
@@ -57,41 +62,55 @@ export default createStore({
         initSession({ commit, state }, sessionData) {
             return axios.post(api_url + '/session/new', {
                 decks: sessionData.decks,
-                players: 4,
+                players: 1, 
                 name: sessionData.name,
                 cardsPerPlayer: sessionData.cardsPerPlayer,
                 cardsOnTable: sessionData.cardsOnTable
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);
-                commit('setPlayerCards', res.data.players[0].cards);
-                commit('setTableCards', res.data.table);
-                commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[0].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
-            }).catch((err) => {
-                console.log(err);
-            });
+            }).catch((err) => console.log(err));
+        },
+        joinSession({ commit, state }, sessionData) {
+            return axios.post(api_url + '/session/join', {
+                name: sessionData.name,
+                sessionId: sessionData.sessionId,
+            }).then((res) => {
+                if (res.status==200) {
+                    commit('setSessionId', res.data.sessionId);
+                    commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
+                    commit('setName', res.data.players[res.data.players.length - 1].name);
+                    commit('setPlayersInfo', res.data.players);
+                    $cookies.set('SessionId', res.data.sessionId, '1h');
+                    UnitTests.testInitSession(state);
+                }
+                else {
+
+                    commit('setGameInfo', true);
+
+                }
+                
+            }).catch((err) => console.log(err));
         },
 
         retrieveSession({ commit, state }, id) {
             return axios.get(api_url + '/session/current', {
-                params: { sessionId: id.sessionId}
+                params: { sessionId: id.sessionId }
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
-                commit('setPlayerId', res.data.players[0].playerId);
-                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setPlayerId', state.playerId);
+                commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck.length);
-                commit('setName', res.data.players[0].name);
+                commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
-                UnitTests.testInitSession(state);
-            }).catch((err) => {
-                console.log(err);
-            });
+                //UnitTests.testInitSession(state);
+            }).catch((err) => console.log(err));
         },
 
         drawCards({ commit, state }) {
@@ -105,8 +124,7 @@ export default createStore({
             }).then((res) => {
                 commit('setPlayerCards', res.data.cards);
                 commit('setCardsInDeck', res.data.deck.length);
-
-                UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
+               // UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
             }).catch((err) => console.log(err));
         },
 
@@ -117,10 +135,27 @@ export default createStore({
                 cardIndex: payload.index,
                 card: payload.card,
             }).then((res) => {
-                commit('setPlayerCards', res.data.players[0].cards);
+                commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
             }).catch((err) => console.log(err));
 
+        },
+        distributeCards({ commit, state }, payload) {
+            axios.post(api_url + '/session/distributecards', {
+                sessionId: state.sessionId,
+            }).then((res) => {
+                commit('setPlayerCards', res.data.players[state.playerId].cards);
+                commit('setTableCards', res.data.table);
+                commit('setCardsInDeck', res.data.deck.length);
+                commit('setName', res.data.players[state.playerId].name);
+                commit('setPlayersInfo', res.data.players);
+            }).catch((err) => console.log(err));
+
+        },
+        updatePlayerInfo({ commit, state }, sessionData) {
+            commit('setSessionId', sessionData.sessionId);
+            commit('setPlayersInfo', sessionData.players);
+            $cookies.set('SessionId', sessionData.sessionId, '1h');
         }
     },
     getters: {
@@ -140,11 +175,11 @@ export default createStore({
             return state.tableCards;
         },
 
-        getSessionId(state){
+        getSessionId(state) {
             return state.sessionId;
         },
 
-        getName(state){
+        getName(state) {
             return state.name;
         },
 
@@ -152,8 +187,11 @@ export default createStore({
             return state.playerId;
         },
 
-        getPlayersInfo(state){
+        getPlayersInfo(state) {
             return state.playersInfo;
+        },
+        getGameInfo(state) {
+            return state.gameStarted;
         },
     }
 });

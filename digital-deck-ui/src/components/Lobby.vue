@@ -1,7 +1,10 @@
 <template>
   <div>
+ <h1 v-if="!isLoaded"  class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
+
+
     <button
-      v-if="!isLoaded"
+      v-if="!isLoaded && this.$store.getters.getPlayerId===0"  
       class="button"
       @click="loadGame()"
       style="
@@ -47,20 +50,42 @@ export default {
       isLoaded: false,
     };
   },
-  created() {
-    this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+   created() {
+
+  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+  this.$socket.on("PlayerJoined", (session) => {
+      this.$store.dispatch("updatePlayerInfo", {
+            sessionId: this.$store.getters.getSessionId,
+            players: session.players
+          });
+    });
+    this.$socket.on("launchGame", (session) => {
+    this.isLoaded = true;
+      this.$store.dispatch("retrieveSession", {
+            sessionId: this.$store.getters.getSessionId,
+          });
+    });
+
   },
   methods: {
     loadGame() {
-      this.isLoaded = true;
+        this.$store.dispatch("distributeCards", {
+            sessionId: this.$store.getters.getSessionId
+          }).then(() => {
+             this.$socket.emit('gameStarted', this.$store.getters.getSessionId);
+
+             this.isLoaded = true;
+          });
     },
+    
+
   },
 };
 </script>
 
 <style scoped>
 .container {
-  margin-top: 20%;
+  margin-top: 15%;
   overflow: none;
   display: grid;
   grid-template-columns: auto auto auto;
@@ -69,20 +94,22 @@ export default {
 
 .players {
   border-radius: 30px;
-  width: 100%;
-  height: 100%;
-  margin-top: 130%;
+  width: 150px;
+  height: 150px;
+  margin-top: 20%;
   background-image: url("../assets/blank-profile-picture.png");
   background-size: contain;
   background-repeat: no-repeat;
-
   padding: 10px;
 }
 
 .names{
-  transform: translate(140%, 100%);
+  transform: translate(150%, 100%);
+  padding-top: 10px;
   font-size: larger;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: bold;
-  color: white;
 }
 </style>

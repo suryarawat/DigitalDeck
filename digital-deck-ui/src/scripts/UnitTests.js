@@ -28,8 +28,8 @@ export default {
             }
             testResult += `playerId = ${state.playerId}\n`;
 
-            testResult += `\tPlayerCards Test. Expecting playerCards to not be null: `;
-            if (state.playerCards) {
+            testResult += `\tPlayerName Test. Expecting player name not to be null: `;
+            if (state.name) {
                 passCount++;
                 testResult += `\n\t\tPASS. `;
             }
@@ -37,10 +37,10 @@ export default {
                 failCount++;
                 testResult += `\n\t\tFAIL. `
             }
-            testResult += `playerCards = ${state.playerCards}\n`;
+            testResult += `player name = ${state.name}\n`;
 
-            testResult += `\tCardsOnTable Test. Expecting tableCards to not be null: `;
-            if (state.tableCards) {
+            testResult += `\tPlayerInfo Test. Expecting player : `;
+            if (state.playersInfo && state.playersInfo.length==1) {
                 passCount++;
                 testResult += `\n\t\tPASS. `;
             }
@@ -48,10 +48,31 @@ export default {
                 failCount++;
                 testResult += `\n\t\tFAIL. `
             }
-            testResult += `tableCards = ${state.tableCards}\n`;
+            testResult += `player Info = ${state.playersInfo.name}\n`;
+            // testResult += `\tPlayerCards Test. Expecting playerCards to not be null: `;
+            // if (state.playerCards) {
+            //     passCount++;
+            //     testResult += `\n\t\tPASS. `;
+            // }
+            // else {
+            //     failCount++;
+            //     testResult += `\n\t\tFAIL. `
+            // }
+            // testResult += `playerCards = ${state.playerCards}\n`;
 
-            testResult += `\tCardsInDeck Test. Expecting numCardsInDeck to be >= 0: `;
-            if (state.playerId >= 0) {
+            // testResult += `\tCardsOnTable Test. Expecting tableCards to not be null: `;
+            // if (state.tableCards) {
+            //     passCount++;
+            //     testResult += `\n\t\tPASS. `;
+            // }
+            // else {
+            //     failCount++;
+            //     testResult += `\n\t\tFAIL. `
+            // }
+            // testResult += `tableCards = ${state.tableCards}\n`;
+
+            testResult += `\tCardsInDeck Test. Expecting numCardsInDeck to be 0: `;
+            if (state.numCardsInDeck <= 0) {
                 passCount++;
                 testResult += `\n\t\tPASS. `;
             }
