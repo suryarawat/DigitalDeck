@@ -82,7 +82,7 @@ export default {
 
     onResetClick() {
       this.$store.commit("setGameState", 0);
-      this.$store.dispatch("resetGame");
+      this.$store.dispatch("initBlackjack");
     }
   }
 };
