@@ -9,7 +9,7 @@ export default createStore({
         playerId: -1,
         playerCards: null,
         tableCards: null,
-        numCardsInDeck: -1,
+        numCardsInDeck: 0,
         name: "",
         playersInfo: [], //other players name and number of cards
     },
@@ -67,7 +67,7 @@ export default createStore({
                 commit('setName', res.data.players[0].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
-                // UnitTests.testInitSession(state);
+                UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },
         joinSession({ commit, state }, sessionData) {
@@ -80,7 +80,7 @@ export default createStore({
                 commit('setName', res.data.players[res.data.players.length - 1].name);
                 commit('setPlayersInfo', res.data.players);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
-                // UnitTests.testInitSession(state);
+                UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },
 
@@ -111,7 +111,7 @@ export default createStore({
             }).then((res) => {
                 commit('setPlayerCards', res.data.cards);
                 commit('setCardsInDeck', res.data.deck);
-                UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
+               // UnitTests.testDrawCards(state, oldPlayerCards, oldCardsInDeck);
             }).catch((err) => console.log(err));
         },
 

@@ -103,7 +103,8 @@ router.post('/distributecards', async function (req, res) {
         res.status(200).send(currSession);
       }
       catch (err){
-        console.log(err);
+        res.status(400).send("Invalid Request...");
+         console.log(err);
       }
     }
   }

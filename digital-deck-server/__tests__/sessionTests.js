@@ -26,9 +26,8 @@ describe('POST /session/new', function () {
     expect(res.body.numDecks).toStrictEqual(1);
     expect(res.body.numPlayers).toStrictEqual(1);
     expect(res.body.sessionId).toStrictEqual(0);
-    expect(res.body.players[0].cards.length).toStrictEqual(1);
-    expect(res.body.table.cards.length).toStrictEqual(2);
-    expect(res.body.deck.length).toStrictEqual(49);
+    expect(res.body.players[0].cards.length).toStrictEqual(0);
+    expect(res.body.deck.length).toStrictEqual(0);
   });
 
   // Edge case. Max number of cards distributed
@@ -44,8 +43,7 @@ describe('POST /session/new', function () {
     expect(res.body.numDecks).toStrictEqual(1);
     expect(res.body.numPlayers).toStrictEqual(1);
     expect(res.body.sessionId).toStrictEqual(0);
-    expect(res.body.players[0].cards.length).toStrictEqual(51);
-    expect(res.body.table.cards.length).toStrictEqual(1);
+    expect(res.body.players[0].cards.length).toStrictEqual(0);
     expect(res.body.deck.length).toStrictEqual(0);
   });
 
@@ -55,10 +53,12 @@ describe('POST /session/new', function () {
       "decks": 1,
       "players": 1,
       "cardsPerPlayer": 52,
-      "cardsOnTable": 1
+      "cardsOnTable": 1,
     };
     const res = await request.post('/session/new').send(body);
-    expect(res.status).toBe(400);
+    const otherResponse = await request.post('/session/distributeCards').send(res.sessionId);
+    expect(res.status).toBe(200);
+    expect(otherResponse.status).toBe(400);
   });
 
   // Invalid request. Invalid decks value
