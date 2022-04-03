@@ -86,7 +86,7 @@
         <span v-else><strong> for number of decks</strong></span>
       </p>
     </div>
-    <lobby v-if="isLoaded" :gamemode="gamemode" :deck-selected="deckSelected" :name="name" />
+    <lobby v-if="isLoaded" :gamemode="gamemode" :deck-selected="parseInt(deckSelected)" :name="name" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
