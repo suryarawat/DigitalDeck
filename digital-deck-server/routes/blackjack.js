@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { getSession } = require('../services/utilities');
+const { getSession, updateSession } = require('../services/utilities');
+const cardShuffleService = require('../services/cardShuffleService');
 
 function addCard(deck, destination)
 {
@@ -30,14 +31,21 @@ router.post('/init', async function (req, res) {
         return;
     }
 
-    var session = getSession(sessionId);
+    var session = await getSession(sessionId);
     if (!session) {
       res.status(400).send("Invalid request. Could not find session with Id " + sessionId);
       return;
     }
 
     var table = session.table;
-    var deck = session.deck;
+    var deck = []
+
+    for (var i = 1; i <= 52; i++) 
+        deck.push(i);
+
+    const updated =  cardShuffleService.shuffleCards(deck);
+    session.deck = updated;
+
     table.cards = [] // make sure the array is empty first
     addCard(deck, table)
     addCard(deck, table)
@@ -51,6 +59,7 @@ router.post('/init', async function (req, res) {
         addCard(deck, players[i])
     }
 
+    await updateSession(session);
     res.status(200).send(session);
 })
 
@@ -63,7 +72,7 @@ router.post('/dealer', async function (req, res) {
         return;
     }
 
-    var session = getSession(sessionId);
+    var session = await getSession(sessionId);
     if (!session) {
       res.status(400).send("Invalid request. Could not find session with Id " + sessionId);
       return;
