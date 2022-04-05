@@ -8,7 +8,7 @@
       >
       <div class="info">
        {{player.name}} <br>
-       x {{player.numOfCards}} cards
+       x {{player.numCards}} cards
       </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-const { getConcSessions, addSession, getSession, getPlayerNames } = require('./services/utilities');
+const { getConcSessions, addSession, getSession, getPlayerNames, updateSession } = require('./services/utilities');
+
 
 function handleSocket(io) {
     io.on("connection", (socket) => { 
@@ -18,6 +19,7 @@ function handleSocket(io) {
             let session = await getSession(sessionId);
             console.log("game Started for a player");
             session.gameStarted = true;
+            await updateSession(session);
             // emit to others which are in the same room
             setTimeout(() => socket.to(sessionId).emit("launchGame", session)
                 , 1000);
@@ -30,10 +32,12 @@ function handleSocket(io) {
 
         socket.on('drawCard', ({ sessionId, numCards, player }) => {
             socket.to(sessionId).emit('cardDrawn', { deck: numCards, player: player });
+            socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
         socket.on("playCard", ({ sessionId, cardsOnTable, player }) => {
             socket.to(sessionId).emit("cardPlayed", { table: { cards: cardsOnTable }, player: player });
+            socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
 

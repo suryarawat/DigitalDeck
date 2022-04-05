@@ -43,7 +43,7 @@ export default {
                 sessionId: this.$store.getters.getSessionId,
                 numCards: this.$store.getters.getNumCardsInDeck,
                 player: {   // for player card display synchronization
-                    id: this.$store.getters.getPlayerId,
+                    name: this.$store.getters.getName,
                     numCards: this.$store.getters.getPlayerCards.length
                 }
             });
