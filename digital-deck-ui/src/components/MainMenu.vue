@@ -113,7 +113,9 @@ export default {
       createForm: false,
       joinForm: false,
       name: "",
-      gamemode: 0
+      gamemode: 0,
+      roomid: null,
+      joinname: null
     };
   },
   components: {
@@ -124,7 +126,7 @@ export default {
     if (currId != null && currId != -1) {
         this.$store
           .dispatch("retrieveSession", {
-            sessionId: currId,
+            sessionId: currId
           }).then(() => {
             this.isLoaded = true;
           });

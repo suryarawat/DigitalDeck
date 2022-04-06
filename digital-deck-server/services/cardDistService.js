@@ -12,12 +12,14 @@ module.exports = {
    * @param cardsOnTable The number of cards to put on the table.
    * @return {json} The json object containing players with player ids and cards assigned to them, table and cards of table and remaining cards on the deck.
    */
-  distCards: function (decks, numPlayers, cardsPerPlayer, cardsOnTable, players ) {
+  distCards: function (decks, numPlayers, cardsPerPlayer, cardsOnTable, players, doClear) {
     let table = new Table([]);
     let cards = getCards(decks);
     if (cardsPerPlayer * numPlayers <= 52 * decks - cardsOnTable) {
       for (var i = 0; i < numPlayers; i++) {
-         let currPlayer = players[i];
+        let currPlayer = players[i];
+        if (doClear)
+          currPlayer.cards = [];
         for (var j = 0; j < cardsPerPlayer; j++) {
           let card = cards.pop();
           currPlayer.addCardTop(card);
@@ -33,7 +35,7 @@ module.exports = {
       );
     }
     return {  table: table, deck: cards };
-  },
+  }
 };
 
 /**

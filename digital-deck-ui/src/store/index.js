@@ -15,7 +15,8 @@ export default createStore({
         gameStarted : false,
         gamemode: -1,
         isCurrentTurn: false,
-        gameState: 0
+        gameState: 0,
+        winners: null
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -77,6 +78,10 @@ export default createStore({
 
         setCurrentTurn(state, isCurrentTurn) {
             state.isCurrentTurn = isCurrentTurn;
+        },
+
+        setWinners(state, winners) {
+            state.winners = winners;
         }
     },
     actions: {
@@ -93,9 +98,24 @@ export default createStore({
                 commit('setPlayerId', res.data.players[0].playerId);
                 commit('setName', res.data.players[0].name);
                 commit('setPlayersInfo', res.data.players);
+                commit('setGamemode', sessionData.gamemode);
+                commit('setGameState', 0);
+                commit('setCurrentTurn', false);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
+        },
+
+        initBlackjack({ commit, state }) {
+            return axios.post(api_url + '/blackjack/init', {
+                sessionId: state.sessionId
+            }).then((res) => {
+                commit('setGameState', 0);
+                commit('setCurrentTurn', false);
+                commit('setCardsInDeck', res.data.deck.length);
+                commit('setTableCards', res.data.table);
+                commit("setCurrentTurn", true);
+            });
         },
 
         joinSession({ commit, state }, sessionData) {
@@ -108,6 +128,8 @@ export default createStore({
                     commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
                     commit('setName', res.data.players[res.data.players.length - 1].name);
                     commit('setPlayersInfo', res.data.players);
+                    commit('setGameState', 0);
+                    commit('setCurrentTurn', false);
                     $cookies.set('SessionId', res.data.sessionId, '1h');
                     UnitTests.testInitSession(state);
                 }
@@ -129,6 +151,7 @@ export default createStore({
                 commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
+                commit('setGamemode', res.data.gamemode);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 //UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
@@ -161,13 +184,10 @@ export default createStore({
             }).catch((err) => console.log(err));
         },
 
-        surrender({ commit }) {
-            console.log('Surrender');
-        },
-
         distributeCards({ commit, state }, payload) {
             return axios.post(api_url + '/session/distributecards', {
                 sessionId: state.sessionId,
+                doClear: payload.doClear
             }).then((res) => {
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
@@ -184,12 +204,20 @@ export default createStore({
             $cookies.set('SessionId', sessionData.sessionId, '1h');
         },
 
-        stand({ commit }) {
-            console.log('Stand');
+        dealersTurn({ commit, state }){
+            return axios.post(api_url + '/blackjack/dealer', {
+                sessionId: state.sessionId
+            }).then((res) => {
+                commit('setWinners', res.data.winners);
+                commit('setTableCards', res.data.table);
+            }).catch((err) => console.log(err));
         },
 
-        resetGame({ commit }) {
-            console.log('Reset');
+        surrender({ state }) {
+            return axios.post(api_url + '/blackjack/surrender', {
+                sessionId: state.sessionId,
+                playerId: state.playerId
+            });
         }
     },
     getters: {
@@ -239,6 +267,10 @@ export default createStore({
 
         getGameState(state) {
             return state.gameState;
+        },
+
+        getWinners(state) {
+            return state.winners;
         }
     }
 });

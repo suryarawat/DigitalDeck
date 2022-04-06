@@ -40,8 +40,16 @@ function handleSocket(io) {
             socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
-        socket.on("endTurn", ({sessionId, playerId}) => {
-            socket.to(sessionId).emit("setTurn", {playerId: ++playerId})
+        socket.on("endTurn", ({ sessionId, playerId }) => {
+            socket.to(sessionId).emit("setTurn", {playerId: ++playerId});
+        });
+
+        socket.on("endGame", ({ sessionId, table, winners }) => {
+            socket.to(sessionId).emit("gameEnded", { table: table, winners: winners });
+        });
+
+        socket.on("resetGame", ({ sessionId }) => {
+            socket.to(sessionId).emit("gameResetted");
         });
     });
 }

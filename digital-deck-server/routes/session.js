@@ -15,12 +15,14 @@ router.post('/new', async function (req, res) {
     var name = req.body.name;
     var cardsPerPlayer = Number(req.body.cardsPerPlayer);
     var cardsOnTable = Number(req.body.cardsOnTable);
+    var gamemode = Number(req.body.gamemode);
   
     if (
       isNaN(decks) ||
       isNaN(players) ||
       isNaN(cardsPerPlayer) ||
       isNaN(cardsOnTable) ||
+      isNaN(gamemode) ||
       decks <= 0 ||
       players <= 0 ||
       cardsPerPlayer < 0 ||
@@ -29,7 +31,7 @@ router.post('/new', async function (req, res) {
         res.status(400).send('Invalid request. Needs decks, players, cardsPerPlayer, and cardsOnTable as positive numbers.');
     } else {
       //just make a session of only 1 player right now 
-        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable);
+        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable, gamemode);
         currSession.players[0].setName(name); 
         await addSession(currSession);
         cleanSession(currSession);
@@ -54,6 +56,7 @@ router.get('/current', async function(req, res) {
     if (!session || session == {}) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
+      console.log(session);
       res.status(200).json(session);
     }
   }
@@ -86,6 +89,8 @@ router.post('/shufflecards', async function (req, res) {
 //distribute cards during a session
 router.post('/distributecards', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
+  let doClear = req.body.doClear;
+
   if (isNaN(sessionId)) {
     res.status(400).send('Invalid call. Needs sessionId as number in the query.');
   } else {
@@ -99,7 +104,8 @@ router.post('/distributecards', async function (req, res) {
           currSession.numPlayers,
           currSession.cardsPerPlayer,
           currSession.cardsOnTable,
-          currSession.players
+          currSession.players,
+          doClear ?? false
         ); 
         currSession.table= new Table(distributed.table.cards);
         currSession.deck= distributed.deck;

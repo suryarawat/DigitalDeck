@@ -1,26 +1,33 @@
 const router = require('express').Router();
-const { getSession, updateSession } = require('../services/utilities');
+const { getSession, getPlayer, updateSession } = require('../services/utilities');
 const cardShuffleService = require('../services/cardShuffleService');
 
-function addCard(deck, destination)
-{
-    var randomCard = deck[Math.floor(Math.random() * deck.length)]
-    var index = deck.indexOf(randomCard)
-    deck.splice(index, 1)
-    destination.addCardTop(randomCard) 
-}
-
-function value(card)
-{
-    return card % 13 > 10 ? 10 : card % 13;
-}
+const CardValue = [
+  1,2,3,4,5,6,7,8,9,10,10,10,10,
+  1,2,3,4,5,6,7,8,9,10,10,10,10,
+  1,2,3,4,5,6,7,8,9,10,10,10,10,
+  1,2,3,4,5,6,7,8,9,10,10,10,10
+];
 
 function sumOfCards(cards)
 {
-    var sum = 0
-    for(var i = 0; i < cards.length; i++)
-        sum += value(cards[i])
-    return sum
+    const aces = cards.filter((card) => {
+      const cardId = (card - 1) % 52;
+      return cardId === 0 || cardId === 13 || cardId === 26 || cardId === 39;
+    });
+    const noAces = cards.filter((card) => !aces.includes(card));
+
+    let total = 0;
+
+    noAces.forEach((card) => {
+      total += CardValue[(card - 1) % 52];
+    });
+
+    aces.forEach(() => {
+      total += total <= 10 ? 11 : 1;
+    });
+
+    return total;
 }
 
 router.post('/init', async function (req, res) {
@@ -38,31 +45,40 @@ router.post('/init', async function (req, res) {
     }
 
     var table = session.table;
-    var deck = []
-
-    for (var i = 1; i <= 52; i++) 
-        deck.push(i);
-
-    const updated =  cardShuffleService.shuffleCards(deck);
-    session.deck = updated;
-
-    table.cards = [] // make sure the array is empty first
-    addCard(deck, table)
-    addCard(deck, table)
     table.cards[0] = -1 * table.cards[0] // flip one card
-
-    var players = session.players;
-    for(var i = 0; i < players.length; i++)
-    {
-        players[i].cards = []
-        addCard(deck, players[i])
-        addCard(deck, players[i])
-    }
 
     await updateSession(session);
     res.status(200).send(session);
 })
 
+router.post('/surrender', async function (req, res) {
+    var sessionId = Number(req.body.sessionId);
+    var playerId = Number(req.body.playerId);
+
+    if (isNaN(sessionId) || isNaN(playerId)) {
+        res.status(400).send("Invalid call. Needs sessionId as a number in the query.");
+        return;
+    }
+
+    var session = await getSession(sessionId);
+    if (!session) {
+      res.status(400).send("Invalid request. Could not find session with Id " + sessionId);
+      return;
+    }
+
+    var player = getPlayer(session, playerId);
+    if (!player) {
+        res.status(400).send("Invalid request. Could not find player with Id " + playerId + " in session " + sessionId);
+        return;
+    }
+
+    for (var i = 0; i < player.cards.length; i++)
+        player.cards[i] = 0;
+
+    session.players[playerId] = player;
+    await updateSession(session);
+    res.status(200).send();
+})
 
 router.post('/dealer', async function (req, res) {
     var sessionId = req.body.sessionId;
@@ -80,25 +96,24 @@ router.post('/dealer', async function (req, res) {
 
     var table = session.table;
     var deck = session.deck;
-    table.cards[0] = -1 * table.cards[0] 
+    table.cards[0] = Math.abs(table.cards[0]);
 
-    var dealersum = sumOfCards(table.cards)
+    var dealersum = sumOfCards(table.cards);
     while(dealersum <= 16)
     {
-        var randomCard = deck[Math.floor(Math.random() * deck.length)]
-        var index = deck.indexOf(randomCard)
-        deck.splice(index, 1)
-        table.addCardTop(randomCard) 
-        dealersum += value(randomCard)
+        table.addCardTop(deck.pop());
+        dealersum = sumOfCards(table.cards);
     }
 
     var players = session.players
     var winners = []
     for(var i = 0; i < players.length; i++)
     {
-        var playerSum = sumOfCards(players[i].cards)
-        if(playerSum > dealersum)
-            winners.push(players[i].name)
+        console.log(players[i].cards);
+        var playerSum = sumOfCards(players[i].cards);
+        console.log(players[i].name, playerSum);
+        if((dealersum > 21 || playerSum >= dealersum) && playerSum <= 21 && !isNaN(playerSum))
+            winners.push(players[i].name);
     }
 
     res.status(200).send({winners: winners, table: table});

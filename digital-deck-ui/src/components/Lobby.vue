@@ -52,30 +52,27 @@ export default {
     deckSelected: Number,
     name: String,
   },
-  created() {
-    if ($cookies.get("isGameStarted") == 1) {
-      this.isLoaded = true;
-    }
-    this.$socket.emit("joinRoom", this.$store.getters.getSessionId);
-  },
   data: () => {
     return {
       isLoaded: false,
     };
   },
   created() {
+    if ($cookies.get("isGameStarted") == 1) {
+      this.isLoaded = true;
+    }
     this.$socket.emit("joinRoom", this.$store.getters.getSessionId);
 
     this.$socket.on("PlayerJoined", (session) => {
       this.$store.dispatch("updatePlayerInfo", {
         sessionId: this.$store.getters.getSessionId,
-        players: session.players,
+        players: session.players
       });
     });
 
     this.$socket.on("launchGame", (session) => {
       this.$store.dispatch("retrieveSession", {
-        sessionId: this.$store.getters.getSessionId,
+        sessionId: this.$store.getters.getSessionId
       }).then(() => {
         this.isLoaded = true;
       });
@@ -84,7 +81,7 @@ export default {
   methods: {
     loadGame() {
       $cookies.set("isGameStarted", 1, -1);
-      this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
+      // this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
       this.$store
         .dispatch("distributeCards", {
           sessionId: this.$store.getters.getSessionId,
@@ -92,9 +89,12 @@ export default {
         .then(() => {
           this.$socket.emit("gameStarted", this.$store.getters.getSessionId);
           if (this.gamemode == 1) {
-            this.$store.dispatch("initBlackjack");
+            this.$store.dispatch("initBlackjack").then(() => {
+              this.isLoaded = true;
+            });
+          } else {
+            this.isLoaded = true;
           }
-          this.isLoaded = true;
         });
     },
   },
