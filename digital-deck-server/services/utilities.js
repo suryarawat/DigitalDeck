@@ -27,7 +27,7 @@ async function updateSession(session) {
         {
             sessionData = await getDB();
         }
-        sessionData.replaceOne(query, session);
+        await sessionData.replaceOne(query, session);
     }
 }
 
@@ -119,7 +119,7 @@ async function getSession(id)
 
 function convertToSession(session) {
     try{
-        let sessionCopy = new Session(session.numDecks, session.numPlayers, session.cardsPerPlayer, session.cardsOnTable, session.sessionId);
+        let sessionCopy = new Session(session.numDecks, session.numPlayers, session.cardsPerPlayer, session.cardsOnTable, session.sessionId, session.gamemode);
         sessionCopy.players = session.players;
         sessionCopy.deck = session.deck;
         sessionCopy.players.forEach((player, index) => {

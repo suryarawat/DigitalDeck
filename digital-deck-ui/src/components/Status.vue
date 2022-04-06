@@ -1,12 +1,13 @@
 <template>
   <div class="total">
-    <div>Current total: {{ total }}</div>
+    <div v-if="$store.getters.getGameState === 0">Current total: {{ total }}</div>
+    <div v-else>{{ winnersList }}</div>
     <button
       v-if="$store.getters.getGameState === 0"
       class="button"
       :class="{ disabled: !isCurrentTurn }"
       :disabled="!isCurrentTurn"
-      @click="onStandClick"
+      @click="endTurn"
     >
       Stand
     </button>
@@ -35,14 +36,22 @@ import CardValue from "./CardValue.js";
 export default {
   name: "status",
   created() {
-    if(this.$store.getters.getPlayerId === 0)
-      this.$store.commit("setCurrentTurn", true);
-
-    this.$socket.on("setTurn", ( {payload} ) => {
-      if(payload.playerId === this.$store.getters.getPlayerId)
+    this.$socket.on("setTurn", ( { playerId } ) => {
+      if(playerId === this.$store.getters.getPlayerId)
         this.$store.commit("setCurrentTurn", true);
-      if(payload.playerId > this.$store.getters.getPlayersInfo.length)
-        this.$store.dispatch("dealersTurn");
+    });
+
+    this.$socket.on("gameEnded", ({ table, winners }) => {
+      this.$store.commit("setTableCards", table);
+      this.$store.commit("setWinners", winners);
+      this.$store.commit("setGameState", 1);
+    });
+
+    this.$socket.on("gameResetted", () => {
+      this.$store.dispatch("retrieveSession", {
+        sessionId: this.$store.getters.getSessionId
+      });
+      this.$store.commit("setGameState", 0);
     });
   },
 
@@ -61,11 +70,11 @@ export default {
         total += CardValue[(card - 1) % 52];
       });
 
-      aces.forEach((card) => {
+      aces.forEach(() => {
         total += total <= 10 ? 11 : 1;
       });
 
-      if (cards.length === 2 && total === 21) {
+      if (cards.length === 2 && total === 21 && this.isCurrentTurn) {
         total = "BLACKJACK!";
         this.endTurn();
       } else if (total > 21) {
@@ -83,30 +92,49 @@ export default {
     isFirstMove() {
       return this.$store.getters.getPlayerCards.length === 2;
     },
+
+    winnersList() {
+      return this.$store.getters.getWinners.length === 0 ? "Dealer wins" : "Winners: " + this.$store.getters.getWinners;
+    }
   },
   methods: {
     onSurrenderClick() {
-      this.$store.dispatch("surrender");
-      this.endTurn();
-    },
-
-    onStandClick() {
-      this.$store.dispatch("stand");
-      this.endTurn();
+      this.$store.dispatch("surrender").then(() => {
+        this.endTurn();
+      });
     },
 
     onResetClick() {
       this.$store.commit("setGameState", 0);
-      this.$store.dispatch("initBlackjack");
+      this.$store.dispatch("distributeCards", {
+        sessionId: this.$store.getters.getSessionId,
+        doClear: true
+      }).then(() => {
+          this.$store.dispatch("initBlackjack").then(() => {
+            this.$socket.emit("resetGame", {
+              sessionId: this.$store.getters.getSessionId
+            });
+          });
+      });
     },
 
-    endTurn()
-    {
+    endTurn() {
       this.$store.commit("setCurrentTurn", false);
       this.$socket.emit("endTurn", {
         sessionId: this.$store.getters.getSessionId,
-        playerId: this.$store.getters.getPlayerId,
+        playerId: this.$store.getters.getPlayerId
       });
+
+      if (this.$store.getters.getPlayerId >= this.$store.getters.getPlayersInfo.length - 1) {
+        this.$store.dispatch("dealersTurn").then(() => {
+          this.$store.commit("setGameState", 1);
+          this.$socket.emit("endGame", {
+            sessionId: this.$store.getters.getSessionId,
+            table: { cards: this.$store.getters.getTableCards },
+            winners: this.$store.getters.getWinners
+          });
+        });
+      }
     }
   },
 };

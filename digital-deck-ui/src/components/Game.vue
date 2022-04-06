@@ -19,9 +19,6 @@ export default {
         HandArea,
         OtherPlayersArea,
         TableArea
-    },
-    created() {
-        this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
     }
 };
 </script>

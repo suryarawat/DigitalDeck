@@ -18,11 +18,10 @@ function handleSocket(io) {
         socket.on('gameStarted', async (sessionId) => {
             let session = await getSession(sessionId);
             console.log("game Started for a player");
-            session.gameStarted = true;
-            await updateSession(session);
+            // session.gameStarted = true;
+            // await updateSession(session);
             // emit to others which are in the same room
-            setTimeout(() => socket.to(sessionId).emit("launchGame", session)
-                , 1000);
+            socket.to(sessionId).emit("launchGame", session);
 
         });
 
@@ -40,8 +39,16 @@ function handleSocket(io) {
             socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
-        socket.on("endTurn", ({sessionId, playerId}) => {
-            socket.to(sessionId).emit("setTurn", {playerId: ++playerId})
+        socket.on("endTurn", ({ sessionId, playerId }) => {
+            socket.to(sessionId).emit("setTurn", {playerId: ++playerId});
+        });
+
+        socket.on("endGame", ({ sessionId, table, winners }) => {
+            socket.to(sessionId).emit("gameEnded", { table: table, winners: winners });
+        });
+
+        socket.on("resetGame", ({ sessionId }) => {
+            socket.to(sessionId).emit("gameResetted");
         });
     });
 }

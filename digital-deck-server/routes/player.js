@@ -14,7 +14,7 @@ router.post('/playcard', async function (req, res) {
     return;
   }
 
-  if (cardIndex < 0 || card < 0 || card > 52) {
+  if (cardIndex < 0 || card < 0) {
     res.status(400).send("Invalid call. Card Index and card should be in bounds.");
     return;
   }
@@ -41,6 +41,7 @@ router.post('/playcard', async function (req, res) {
 
   player.removeCard(cardIndex);
   table.addCardTop(card);
+  session.players[playerId] = player;
   await updateSession(session);
   res.status(200).send(session);
 
