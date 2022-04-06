@@ -56,7 +56,6 @@ router.get('/current', async function(req, res) {
     if (!session || session == {}) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}`);
     } else {
-      console.log(session);
       res.status(200).json(session);
     }
   }

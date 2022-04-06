@@ -18,11 +18,10 @@ function handleSocket(io) {
         socket.on('gameStarted', async (sessionId) => {
             let session = await getSession(sessionId);
             console.log("game Started for a player");
-            session.gameStarted = true;
-            await updateSession(session);
+            // session.gameStarted = true;
+            // await updateSession(session);
             // emit to others which are in the same room
-            setTimeout(() => socket.to(sessionId).emit("launchGame", session)
-                , 1000);
+            socket.to(sessionId).emit("launchGame", session);
 
         });
 
