@@ -86,7 +86,7 @@
         <span v-else><strong> for number of decks</strong></span>
       </p>
     </div>
-    <lobby v-if="isLoaded" :gamemode="gamemode" />
+    <lobby v-if="isLoaded" :gamemode="gamemode" :deck-selected="parseInt(deckSelected)" :name="name" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
@@ -113,7 +113,9 @@ export default {
       createForm: false,
       joinForm: false,
       name: "",
-      gamemode: 0
+      gamemode: 0,
+      roomid: null,
+      joinname: null
     };
   },
   components: {
@@ -124,7 +126,7 @@ export default {
     if (currId != null && currId != -1) {
         this.$store
           .dispatch("retrieveSession", {
-            sessionId: currId,
+            sessionId: currId
           }).then(() => {
             this.isLoaded = true;
           });

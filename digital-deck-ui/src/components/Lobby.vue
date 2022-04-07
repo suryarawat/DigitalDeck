@@ -1,8 +1,11 @@
 <template>
   <div>
- <h1 v-if="!isLoaded"  class="h1">Room: {{this.$store.getters.getSessionId}}</h1>
+    <h1 v-if="!isLoaded" class="h1">
+      Room: {{ this.$store.getters.getSessionId }}
+    </h1>
+
     <button
-      v-if="!isLoaded && this.$store.getters.getPlayerId===0"  
+      v-if="!isLoaded && this.$store.getters.getPlayerId === 0"
       class="button"
       @click="loadGame()"
       style="
@@ -15,7 +18,7 @@
       Start
     </button>
     <!-- <players-list v-if="!isLoaded" style="transform: translate(0%, 50%)" /> -->
-    <div v-if="!isLoaded" class="container" >
+    <div v-if="!isLoaded" class="container">
       <div
         v-for="player in this.$store.getters.getPlayersInfo"
         :key="player"
@@ -45,32 +48,31 @@ export default {
     PlayersList,
   },
   props: {
-    gamemode: Number
+    gamemode: Number,
+    deckSelected: Number,
+    name: String,
+  },
+  data: () => {
+    return {
+      isLoaded: false,
+    };
   },
   created() {
     if ($cookies.get("isGameStarted") == 1) {
       this.isLoaded = true;
     }
     this.$socket.emit("joinRoom", this.$store.getters.getSessionId);
-  },
-  data: () => {
-    return {
-      isLoaded: false
-    };
-  },
-  created() {
-    this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
 
     this.$socket.on("PlayerJoined", (session) => {
-        this.$store.dispatch("updatePlayerInfo", {
-              sessionId: this.$store.getters.getSessionId,
-              players: session.players
-        });
+      this.$store.dispatch("updatePlayerInfo", {
+        sessionId: this.$store.getters.getSessionId,
+        players: session.players
+      });
     });
 
     this.$socket.on("launchGame", (session) => {
       this.$store.dispatch("retrieveSession", {
-        sessionId: this.$store.getters.getSessionId,
+        sessionId: this.$store.getters.getSessionId
       }).then(() => {
         this.isLoaded = true;
       });
@@ -78,16 +80,24 @@ export default {
   },
   methods: {
     loadGame() {
-        $cookies.set("isGameStarted", 1, -1);
-        this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
-        this.$store.dispatch("distributeCards", {
-            sessionId: this.$store.getters.getSessionId
-          }).then(() => {
-             this.$socket.emit('gameStarted', this.$store.getters.getSessionId);
-             this.isLoaded = true;
-          });
-    }
-  }
+      $cookies.set("isGameStarted", 1, -1);
+      // this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
+      this.$store
+        .dispatch("distributeCards", {
+          sessionId: this.$store.getters.getSessionId,
+        })
+        .then(() => {
+          this.$socket.emit("gameStarted", this.$store.getters.getSessionId);
+          if (this.gamemode == 1) {
+            this.$store.dispatch("initBlackjack").then(() => {
+              this.isLoaded = true;
+            });
+          } else {
+            this.isLoaded = true;
+          }
+        });
+    },
+  },
 };
 </script>
 
@@ -111,7 +121,7 @@ export default {
   padding: 10px;
 }
 
-.names{
+.names {
   transform: translate(150%, 100%);
   padding-top: 10px;
   font-size: larger;
