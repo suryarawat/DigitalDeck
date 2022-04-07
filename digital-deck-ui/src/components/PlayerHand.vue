@@ -3,6 +3,7 @@
     <div
       v-for="(card, index) in this.$store.getters.getPlayerCards"
       class="player-hand"
+      :class="{ 'disabled': isBlackjack }"
       :key="card"
       :id="'card' + index"
       @click="playCard(card, index)"
@@ -23,6 +24,11 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "player-hand",
+  computed: {
+    isBlackjack() {
+      return this.$store.getters.getGamemode === 1;
+    }
+  },
   methods: {
     cardImage(card) {
       return card > 0
@@ -31,19 +37,21 @@ export default {
     },
 
     playCard(card, index) {
-      this.$store.dispatch("playCards", {
-        card: card,
-        index: index,
-      }).then(() => {
-        this.$socket.emit("playCard", {
-          sessionId: this.$store.getters.getSessionId,
-          cardsOnTable: this.$store.getters.getTableCards,
-          player: { // for player card display synchronization
-            name: this.$store.getters.getName,
-            numCards: this.$store.getters.getPlayerCards.length
-          }
+      if (!this.isBlackjack) {
+        this.$store.dispatch("playCards", {
+          card: card,
+          index: index,
+        }).then(() => {
+          this.$socket.emit("playCard", {
+            sessionId: this.$store.getters.getSessionId,
+            cardsOnTable: this.$store.getters.getTableCards,
+            player: { // for player card display synchronization
+              id: this.$store.getters.getPlayerId,
+              numCards: this.$store.getters.getPlayerCards.length
+            }
+          });
         });
-      });
+      }
     },
 
     getWindowWidth() {
@@ -56,5 +64,9 @@ export default {
 <style scoped>
 .player-hand {
   cursor: pointer;
+}
+
+.disabled {
+  cursor: default;
 }
 </style>

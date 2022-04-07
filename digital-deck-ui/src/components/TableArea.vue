@@ -22,7 +22,7 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "table-area",
-  created() {
+  mounted() {
     this.$socket.on("cardPlayed", ({ table, player }) => {
       this.$store.commit("setTableCards", table);
     });
@@ -35,6 +35,7 @@ export default {
     },
 
     flipCard(card) {
+      if (this.$store.getters.getGamemode != 1)
         this.$store.commit('flipCard', card);
     },
 

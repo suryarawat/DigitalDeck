@@ -11,8 +11,11 @@ export default createStore({
         tableCards: null,
         numCardsInDeck: 0,
         name: "",
-        playersInfo: [], //other players name and number of cards
+        playersInfo: null, //other players name and number of cards
         gameStarted : false,
+        gamemode: -1,
+        isCurrentTurn: false,
+        gameState: 0
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -58,13 +61,23 @@ export default createStore({
                 var obj = { name: players[i].name, numCards: players[i].cards.length };
                 state.playersInfo.push(obj);
             }
-
         },
-        
+
         setGameInfo (state, info) {
             state.gameStarted = info;
         },
 
+        setGamemode(state, gamemode) {
+            state.gamemode = gamemode;
+        },
+
+        setGameState(state, gameState) {
+            state.gameState = gameState;
+        },
+
+        setCurrentTurn(state, isCurrentTurn) {
+            state.isCurrentTurn = isCurrentTurn;
+        }
     },
     actions: {
         initSession({ commit, state }, sessionData) {
@@ -73,7 +86,8 @@ export default createStore({
                 players: 1, 
                 name: sessionData.name,
                 cardsPerPlayer: sessionData.cardsPerPlayer,
-                cardsOnTable: sessionData.cardsOnTable
+                cardsOnTable: sessionData.cardsOnTable,
+                gamemode: sessionData.gamemode
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
                 commit('setPlayerId', res.data.players[0].playerId);
@@ -83,6 +97,7 @@ export default createStore({
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },
+
         joinSession({ commit, state }, sessionData) {
             return axios.post(api_url + '/session/join', {
                 name: sessionData.name,
@@ -97,9 +112,7 @@ export default createStore({
                     UnitTests.testInitSession(state);
                 }
                 else {
-
                     commit('setGameInfo', true);
-
                 }
                 
             }).catch((err) => console.log(err));
@@ -146,10 +159,14 @@ export default createStore({
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
             }).catch((err) => console.log(err));
-
         },
+
+        surrender({ commit }) {
+            console.log('Surrender');
+        },
+
         distributeCards({ commit, state }, payload) {
-            axios.post(api_url + '/session/distributecards', {
+            return axios.post(api_url + '/session/distributecards', {
                 sessionId: state.sessionId,
             }).then((res) => {
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
@@ -160,10 +177,19 @@ export default createStore({
             }).catch((err) => console.log(err));
 
         },
+
         updatePlayerInfo({ commit, state }, sessionData) {
             commit('setSessionId', sessionData.sessionId);
             commit('setPlayersInfo', sessionData.players);
             $cookies.set('SessionId', sessionData.sessionId, '1h');
+        },
+
+        stand({ commit }) {
+            console.log('Stand');
+        },
+
+        resetGame({ commit }) {
+            console.log('Reset');
         }
     },
     getters: {
@@ -198,8 +224,21 @@ export default createStore({
         getPlayersInfo(state) {
             return state.playersInfo;
         },
+
         getGameInfo(state) {
             return state.gameStarted;
         },
+
+        getGamemode(state) {
+            return state.gamemode;
+        },
+
+        isCurrentTurn(state) {
+            return state.isCurrentTurn;
+        },
+
+        getGameState(state) {
+            return state.gameState;
+        }
     }
 });

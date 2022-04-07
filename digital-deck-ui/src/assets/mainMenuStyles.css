@@ -127,3 +127,24 @@ left: 0;
 color: #03e9f4;
 font-size: 12px;
 }
+
+.select-box {
+  margin: 10px 0 20px 0;
+}
+
+.select-box label {
+  font-size: 16px;
+  color: #fff;
+}
+
+.select-gamemode {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.select-gamemode select {
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
