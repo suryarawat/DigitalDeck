@@ -48,6 +48,7 @@ function handleSocket(io) {
         });
 
         socket.on("resetGame", ({ sessionId }) => {
+            console.log('test');
             socket.to(sessionId).emit("gameResetted");
         });
     });
