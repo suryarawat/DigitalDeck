@@ -188,7 +188,6 @@ export default {
             name: this.joinname,
           })
           .then(() => {
-            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
              if (this.$store.getters.getGameInfo) {
                console.log("You cant join");
              }

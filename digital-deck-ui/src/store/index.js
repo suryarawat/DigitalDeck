@@ -49,17 +49,17 @@ export default createStore({
         },
 
         setPlayerInfo(state, player) {
-            for (var i = 0; i < state.playersInfo.length; i++) {
-                if (state.playersInfo[i].name === player.name) {
-                    state.playersInfo[i].numCards = player.numCards;
+            for (var playerInfo of state.playersInfo) {
+                if (playerInfo.name === player.name) {
+                    playerInfo.numCards = player.numCards;
                 }
             }
         },
 
         setPlayersInfo(state, players) {
             state.playersInfo = [];
-            for (var i = 0; i < players.length; i++) {
-                var obj = { name: players[i].name, numCards: players[i].cards.length };
+            for (var player of players) {
+                var obj = { name: player.name, numCards: player.cards.length };
                 state.playersInfo.push(obj);
             }
         },
@@ -158,8 +158,8 @@ export default createStore({
         },
 
         drawCards({ commit, state }) {
-            let oldPlayerCards = state.playerCards;
-            let oldCardsInDeck = state.numCardsInDeck;
+            // let oldPlayerCards = state.playerCards;
+            // let oldCardsInDeck = state.numCardsInDeck;
 
             return axios.post(api_url + '/player/drawcard', {
                 sessionId: state.sessionId,
@@ -198,7 +198,7 @@ export default createStore({
 
         },
 
-        updatePlayerInfo({ commit, state }, sessionData) {
+        updatePlayerInfo({ commit }, sessionData) {
             commit('setSessionId', sessionData.sessionId);
             commit('setPlayersInfo', sessionData.players);
             $cookies.set('SessionId', sessionData.sessionId, '1h');
@@ -243,10 +243,6 @@ export default createStore({
 
         getName(state) {
             return state.name;
-        },
-
-        getPlayerId(state) {
-            return state.playerId;
         },
 
         getPlayersInfo(state) {

@@ -9,7 +9,6 @@
       class="button"
       @click="loadGame()"
       style="
-        postion: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, 300%);
@@ -17,7 +16,6 @@
     >
       Start
     </button>
-    <!-- <players-list v-if="!isLoaded" style="transform: translate(0%, 50%)" /> -->
     <div v-if="!isLoaded" class="container">
       <div
         v-for="player in this.$store.getters.getPlayersInfo"
@@ -38,14 +36,12 @@
 
 <script>
 import Game from "./Game.vue";
-import PlayersList from "./PlayersList.vue";
 import { VueCookies } from "vue-cookies";
 
 export default {
   name: "lobby",
   components: {
-    Game,
-    PlayersList,
+    Game
   },
   props: {
     gamemode: Number,
@@ -70,7 +66,7 @@ export default {
       });
     });
 
-    this.$socket.on("launchGame", (session) => {
+    this.$socket.on("launchGame", () => {
       this.$store.dispatch("retrieveSession", {
         sessionId: this.$store.getters.getSessionId
       }).then(() => {
@@ -81,7 +77,6 @@ export default {
   methods: {
     loadGame() {
       $cookies.set("isGameStarted", 1, -1);
-      // this.$store.commit('setGamemode', Number($cookies.get('Gamemode')));
       this.$store
         .dispatch("distributeCards", {
           sessionId: this.$store.getters.getSessionId,

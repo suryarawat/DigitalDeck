@@ -11,7 +11,6 @@
 import HandArea from './HandArea.vue';
 import TableArea from './TableArea.vue';
 import OtherPlayersArea from './OtherPlayersArea.vue';
-import { VueCookies } from "vue-cookies";
 
 export default {
     name: 'game',

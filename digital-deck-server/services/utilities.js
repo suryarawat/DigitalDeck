@@ -101,9 +101,10 @@ async function addSession(session)
  */
 async function getSession(id)
 {
+    const sessionId = Number(id);
     if (process.env.NODE_ENV == 'test')
     {
-        return concSessions.find(session => session.sessionId === id);
+        return concSessions.find(session => session.sessionId === sessionId);
     }
     else
     {
@@ -111,9 +112,9 @@ async function getSession(id)
         {
             sessionData = await getDB();
         }
-        const query = {sessionId: id};
+        const query = {sessionId: sessionId};
         const session = await sessionData.findOne(query);
-        return convertToSession(session);        
+        return convertToSession(session);
     }
 }
 
@@ -136,8 +137,7 @@ function convertToSession(session) {
 
 function convertToPlayer(player) {
     try{
-        let playerCopy = new Player(player.cards, player.name, player.playerId);
-        return playerCopy;
+        return new Player(player.cards, player.name, player.playerId);
     }
     catch (err) {
         console.log(err);
@@ -147,8 +147,7 @@ function convertToPlayer(player) {
 
 function convertToTable(table) {
     try{
-        let tableCopy = new Table(table.cards);
-        return tableCopy;
+        return new Table(table.cards);
     }
     catch (err) {
         console.log(err);
@@ -170,7 +169,7 @@ function getPlayer(session, id)
     }
     else
     {
-        const player = session.players.find(player => player.playerId === id);
+        const player = session.players.find(p => p.playerId === id);
         return convertToPlayer(player);
     }
 }
@@ -183,8 +182,8 @@ function getPlayer(session, id)
  function getPlayerNames(session)
  {  let nameArray = [];
     let players = session.players;
-    for (let i = 0 ; i<players.length;i++){
-        nameArray.push(players[i].name);
+    for (var player of players) {
+        nameArray.push(player.name);
     }
     return nameArray;
  }

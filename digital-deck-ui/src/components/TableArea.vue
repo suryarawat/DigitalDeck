@@ -23,7 +23,7 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 export default {
   name: "table-area",
   mounted() {
-    this.$socket.on("cardPlayed", ({ table, player }) => {
+    this.$socket.on("cardPlayed", ({ table }) => {
       this.$store.commit("setTableCards", table);
     });
   },

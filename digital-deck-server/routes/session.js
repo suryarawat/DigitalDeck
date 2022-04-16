@@ -30,7 +30,7 @@ router.post('/new', async function (req, res) {
         res.status(400).send('Invalid request. Needs decks, players, cardsPerPlayer, and cardsOnTable as positive numbers.');
     } else {
       //just make a session of only 1 player right now 
-        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable, gamemode);
+        var currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable, gamemode);
         currSession.players[0].setName(name); 
         await addSession(currSession);
         cleanSession(currSession);
