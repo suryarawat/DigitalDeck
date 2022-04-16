@@ -3,7 +3,7 @@
 ### Team Members
 
 | Name | GitHub Username | Email 
-| --- | --- | --- |
+|  --- |  --- |  --- |
 | Dang Nguyen | mdangnguyen | nguye35@myumanitoba.ca
 | Hasan Saleem | hasan-umanitoba | saleemmh@myumanitoba.ca
 | Jasdeep Singh | dhillonJas | jasdeeps@myumanitoba.ca

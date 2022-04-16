@@ -6,7 +6,7 @@ const Player = require('../models/player');
 const Table = require('../models/table');
 
 beforeAll(() => {
-    var player = new Player( [ 12, 13, 14, 15]);
+    var player = Player.build( [ 12, 13, 14, 15], '', 0);
     var table = new Table([1, 2, 3, 4, 5, 6, 7]);
 
     var session = {
@@ -109,7 +109,7 @@ beforeAll(() => {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
-            "numOfCards": 1
+            "numCards": 1
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(200);
@@ -120,7 +120,7 @@ beforeAll(() => {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
-            "numOfCards": 51
+            "numCards": 51
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(200);
@@ -131,7 +131,7 @@ beforeAll(() => {
         const body = {
             "sessionId": 1,
             "playerId" : 0,
-            "numOfCards": 0
+            "numCards": 0
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
@@ -142,18 +142,18 @@ beforeAll(() => {
         const body = {
             "sessionId": 0,
             "playerId" : 1,
-            "numOfCards": 0
+            "numCards": 0
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
     });
 
-    // Invalid request. Invalid numOfCards
-    it('Invalid numOfCards. Respond with 400', async function () {
+    // Invalid request. Invalid numCards
+    it('Invalid numCards. Respond with 400', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
-            "numOfCards": -1
+            "numCards": -1
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
@@ -164,7 +164,7 @@ beforeAll(() => {
         const body = {
             "sessionId": 0,
             "playerId" : 0,
-            "numOfCards": 1
+            "numCards": 1
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
@@ -174,7 +174,7 @@ beforeAll(() => {
     it('Missing sessionId. Respond with 400', async function () {
         const body = {
             "playerId" : 0,
-            "numOfCards": 0
+            "numCards": 0
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
@@ -184,14 +184,14 @@ beforeAll(() => {
     it('Missing playerId. Respond with 400', async function () {
         const body = {
             "sessionId" : 0,
-            "numOfCards": 0
+            "numCards": 0
         };
         const res = await request.post('/player/drawcard').send(body);
         expect(res.status).toBe(400);
     });
 
-    // Invalid request. Missing numOfCards
-    it('Missing numOfCards. Respond with 400', async function () {
+    // Invalid request. Missing numCards
+    it('Missing numCards. Respond with 400', async function () {
         const body = {
             "sessionId": 0,
             "playerId" : 0

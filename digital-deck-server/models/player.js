@@ -4,9 +4,17 @@
  module.exports = class Player {
     // keep track of distinct players
     static players = 0;
-    constructor(cards) {
+
+    static build(cards, name, playersAdded){
+      const playerId = playersAdded;
+      return new Player(cards, name, playerId);
+    }
+
+    constructor(cards, name, playerId) {
       this.cards = cards;
-      this.playerId = Player.players++;
+      this.playerId = playerId;
+      this.name = name;
+      this.isHost= false;
     }
   
     /**
@@ -85,6 +93,11 @@
         this.cards.splice(index, 1);
       }
       return cardToRemove;
+    }
+
+    setName(name)
+    {
+      this.name = name;
     }
   };
   

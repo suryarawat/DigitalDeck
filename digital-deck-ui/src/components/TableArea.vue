@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="table-area">
     <div
       v-for="(card, index) in this.$store.getters.getTableCards"
       :key="card"
@@ -22,14 +22,20 @@ import CardDeckImageEnum from "./CardDeckImageEnum.js";
 
 export default {
   name: "table-area",
+  mounted() {
+    this.$socket.on("cardPlayed", ({ table, player }) => {
+      this.$store.commit("setTableCards", table);
+    });
+  },
   methods: {
     cardImage(card) {
       return card > 0
-        ? CardDeckImageEnum.FRONT[card - 1]
+        ? CardDeckImageEnum.FRONT[(card - 1) % 52]
         : CardDeckImageEnum.BACK.DEFAULT;
     },
 
     flipCard(card) {
+      if (this.$store.getters.getGamemode != 1)
         this.$store.commit('flipCard', card);
     },
 
@@ -39,3 +45,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-area {
+  height: 100%;
+}
+</style>

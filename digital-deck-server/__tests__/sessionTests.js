@@ -26,9 +26,8 @@ describe('POST /session/new', function () {
     expect(res.body.numDecks).toStrictEqual(1);
     expect(res.body.numPlayers).toStrictEqual(1);
     expect(res.body.sessionId).toStrictEqual(0);
-    expect(res.body.players[0].cards.length).toStrictEqual(1);
-    expect(res.body.table.cards.length).toStrictEqual(2);
-    expect(res.body.deck.length).toStrictEqual(49);
+    expect(res.body.players[0].cards.length).toStrictEqual(0);
+    expect(res.body.deck.length).toStrictEqual(0);
   });
 
   // Edge case. Max number of cards distributed
@@ -44,8 +43,7 @@ describe('POST /session/new', function () {
     expect(res.body.numDecks).toStrictEqual(1);
     expect(res.body.numPlayers).toStrictEqual(1);
     expect(res.body.sessionId).toStrictEqual(0);
-    expect(res.body.players[0].cards.length).toStrictEqual(51);
-    expect(res.body.table.cards.length).toStrictEqual(1);
+    expect(res.body.players[0].cards.length).toStrictEqual(0);
     expect(res.body.deck.length).toStrictEqual(0);
   });
 
@@ -55,10 +53,12 @@ describe('POST /session/new', function () {
       "decks": 1,
       "players": 1,
       "cardsPerPlayer": 52,
-      "cardsOnTable": 1
+      "cardsOnTable": 1,
     };
     const res = await request.post('/session/new').send(body);
-    expect(res.status).toBe(400);
+    const otherResponse = await request.post('/session/distributeCards').send(res.sessionId);
+    expect(res.status).toBe(200);
+    expect(otherResponse.status).toBe(400);
   });
 
   // Invalid request. Invalid decks value
@@ -113,12 +113,12 @@ describe('POST /session/new', function () {
 describe('GET /session/current', function () {
   // Valid request
   it('Typical valid request. Respond with 200', async function () {
-    addSession({
+    await addSession({
       "numDecks": 1,
       "numPlayers": 1, 
       "sessionId": 0,
       "players": [
-        new Player([1])
+        Player.build([1])
       ],
       "table": new Table([]),
       "deck": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52]
@@ -150,12 +150,12 @@ describe('GET /session/current', function () {
 describe('POST /session/shufflecards', function () {
   // Valid request
   it('Typical valid request. Respond with 200', async function () {
-    addSession({
+    await addSession({
       "numDecks": 1,
       "numPlayers": 1, 
       "sessionId": 0,
       "players": [
-        new Player([1])
+        Player.build([1])
       ],
       "table": new Table([]),
       "deck": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52]

@@ -1,15 +1,80 @@
 <template>
   <div>
-    <div v-if="!isLoaded" class="main-menu">
-      <h1>Digital Deck</h1>
+    <div v-show="!isLoaded" class="main-menu">
+      <h1 class="heading">Digital Deck</h1>
+      <button class="button" v-on:click="toggleCreateForm()">Create</button>
+      <button class="button" v-on:click="toggleJoinForm()">Join</button>
       <br />
-      <span>Decks</span><br />
-      <input v-model.number="deckSelected" type="number" min="1" oninput="validity.valid||(value='');"/><br />
-      <span>Cards on hand</span><br />
-      <input v-model.number="cardsPerPlayer" type="number"  min="1" oninput="validity.valid||(value='');"/><br />
-      <span>Cards on table</span><br />
-      <input v-model.number="cardsOnTable" type="number"  min="0" oninput="validity.valid||(value='');"/><br /><br />
-      <button @click="submitForm" style="cursor: pointer;">Start</button>
+      <div v-if="createForm" class="input-form">
+        <div class="select-box">
+          <label>Gamemode</label>
+          <div class="select-gamemode">
+            <select v-model="gamemode">
+              <option :value="0">Default</option>
+              <option :value="1">Blackjack</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="number-box">
+          <input v-model="name"
+          type="text"
+          required=""
+          />
+          <label>Player Name</label>
+        </div>
+
+        <div class="number-box">
+          <input
+            v-model.number="deckSelected"
+            type="number"
+            min="1"
+            oninput="validity.valid||(value='');"
+            required=""
+          />
+          <label>Number of Decks</label>
+        </div>
+
+        <div v-show="gamemode != 1" class="number-box">
+          <input
+            v-model.number="cardsPerPlayer"
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
+            required=""
+          />
+          <label>Cards on hand</label>
+        </div>
+
+        <div v-show="gamemode != 1" class="number-box">
+          <input
+            v-model.number="cardsOnTable"
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
+            required=""
+          />
+          <label>Cards on table</label>
+        </div>
+
+        <button class="button" @click="submitForm">Start</button>
+      </div>
+
+      <div v-if="joinForm" class="input-form">
+        <div class="number-box">
+          <input v-model="roomid" oninput="validity.valid||(value='');" type="number" required="" />
+          <label>Enter ID</label>
+        </div>
+        <div class="number-box">
+            <input v-model="joinname"
+            type="text"
+            required=""
+            />
+            <label>Name</label>
+          </div>
+        <button class="button" @click="joinRoomForm">Join</button>
+      </div>
+
       <p v-for="error of v$.$errors" :key="error.$uid">
         <strong>{{ error.$message }}</strong>
         <span v-if="error.$property === 'cardsPerPlayer'"
@@ -21,13 +86,13 @@
         <span v-else><strong> for number of decks</strong></span>
       </p>
     </div>
-    <game v-if="isLoaded" />
+    <lobby v-if="isLoaded" :gamemode="gamemode" :deck-selected="parseInt(deckSelected)" :name="name" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
 
 <script>
-import Game from "./Game.vue";
+import Lobby from "./Lobby.vue";
 import useVuelidate from "@vuelidate/core";
 import { between, requiredUnless } from "@vuelidate/validators";
 import { VueCookies } from "vue-cookies";
@@ -42,24 +107,29 @@ export default {
   data: () => {
     return {
       isLoaded: false,
-      deckSelected: '',
-      cardsPerPlayer: '',
-      cardsOnTable: '',
+      deckSelected: "",
+      cardsPerPlayer: null,
+      cardsOnTable: null,
+      createForm: false,
+      joinForm: false,
+      name: "",
+      gamemode: 0,
+      roomid: null,
+      joinname: null
     };
   },
   components: {
-    Game,
+    Lobby
   },
   created() {
     let currId = $cookies.get("SessionId");
     if (currId != null && currId != -1) {
-      this.$store
-        .dispatch("retrieveSession", {
-          sessionId: currId,
-        })
-        .finally(() => {
-          this.isLoaded = true;
-        });
+        this.$store
+          .dispatch("retrieveSession", {
+            sessionId: currId
+          }).then(() => {
+            this.isLoaded = true;
+          });
     } else {
       $cookies.set("SessionId", -1, "1h");
     }
@@ -67,17 +137,27 @@ export default {
   validations() {
     return {
       deckSelected: {
-        requiredIfFunction: requiredUnless(() => {return this.deckSelected == null;}),
+        requiredIfFunction: requiredUnless(() => {
+          return this.deckSelected == null;
+        }),
         between: between(1, 10),
       },
       cardsPerPlayer: {
-        requiredIfFunction: requiredUnless(() => {return this.deckSelected > 10 || this.deckSelected < 0;}),
+        requiredIfFunction: requiredUnless(() => {
+          return this.deckSelected > 10 || this.deckSelected < 0 || this.gamemode === 1;
+        }),
         between: between(1, 52 * this.deckSelected),
       },
       cardsOnTable: {
-        requiredIfFunction: requiredUnless(() => {return this.cardsPerPlayer != null && (this.cardsPerPlayer > 52*this.deckSelected || this.cardsPerPlayer < 0);}),
+        requiredIfFunction: requiredUnless(() => {
+          return (
+            this.cardsPerPlayer != null &&
+            (this.cardsPerPlayer > 52 * this.deckSelected ||
+              this.cardsPerPlayer < 0)
+          ) || this.gamemode === 1;
+        }),
         between: between(0, 52 * this.deckSelected - this.cardsPerPlayer),
-      },
+      }
     };
   },
   methods: {
@@ -89,42 +169,59 @@ export default {
         this.$store
           .dispatch("initSession", {
             decks: this.deckSelected,
-            cardsPerPlayer: this.cardsPerPlayer,
-            cardsOnTable: this.cardsOnTable,
+            name: this.name,
+            cardsPerPlayer: this.gamemode === 0 ? this.cardsPerPlayer : 2,
+            cardsOnTable: this.gamemode === 0 ? this.cardsOnTable : 2,
+            gamemode: this.gamemode
           })
-          .finally(() => {
+          .then(() => {
+            $cookies.set("Gamemode", this.gamemode, "1h");
             this.isLoaded = true;
           });
       }
     },
 
+    async joinRoomForm() {
+      if (this.roomid!=null    ) {
+            this.$store.dispatch("joinSession", {
+            sessionId: this.roomid,
+            name: this.joinname,
+          })
+          .then(() => {
+            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
+             if (this.$store.getters.getGameInfo) {
+               console.log("You cant join");
+             }
+             else {
+             this.isLoaded = true;
+             }
+          });
+      }        
+      else {
+      console.log("Wrong room id enter again ");
+      }
+    },
+
     closeSession() {
       $cookies.set("SessionId", -1, "1h");
+      $cookies.set("Gamemode", -1, "1h");
+      $cookies.set("isGameStarted", -1, -1);
       this.isLoaded = false;
     },
+
+    toggleCreateForm() {
+      this.createForm = !this.createForm;
+      this.joinForm = false;
+    },
+
+    toggleJoinForm() {
+      this.joinForm = !this.joinForm;
+      this.createForm = false;
+    }
   },
 };
 </script>
 
-<style scoped>
-.main-menu {
-  height: 100%;
-  padding: 10% 5% 0;
-  text-align: center;
-  align-items: center;
-}
-
-.exit-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  color: blanchedalmond;
-  font-size: 30px;
-}
+<style>
+@import "../assets/mainMenuStyles.css";
 </style>

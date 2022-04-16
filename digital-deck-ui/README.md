@@ -27,3 +27,5 @@ npm run dev
 ```sh
 npm run build
 ```
+
+- To see the production deployment visit http://35.192.81.46:3000/

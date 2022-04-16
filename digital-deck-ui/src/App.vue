@@ -4,24 +4,23 @@
 
 <script>
 import MainMenu from "./components/MainMenu.vue";
-import io from "socket.io-client";
+
+export let api_url =  "http://localhost:5000";
+if ( process.env.NODE_ENV === 'production'){
+    api_url = 'http://34.132.36.123:5000';
+}
 
 export default {
   name: "app",
   components: {
     MainMenu,
   },
-  data: () => {
-    return {
-      socket: null
-    };
-  },
-  created() {
-    this.socket = io("http://localhost:5000");
-  },
   mounted() {
-    this.socket.on("hello-world", () => {
+    this.$socket.on("hello-world", () => {
       console.log("Hello World!");
+    });
+    this.$socket.on("PlayerJoined", () => {
+      console.log("a player has joined");
     });
   }
 };

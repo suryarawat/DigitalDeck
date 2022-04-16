@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getPlayer, getSession } = require('../services/utilities');
+const { getPlayer, getSession, updateSession } = require('../services/utilities');
 const cardDrawService = require('../services/cardDrawService');
 
 router.post('/playcard', async function (req, res) {
@@ -14,12 +14,12 @@ router.post('/playcard', async function (req, res) {
     return;
   }
 
-  if (cardIndex < 0 || card < 0 || card > 52) {
+  if (cardIndex < 0 || card < 0) {
     res.status(400).send("Invalid call. Card Index and card should be in bounds.");
     return;
   }
 
-  var session = getSession(sessionId);
+  var session = await getSession(sessionId);
   if (!session) {
     res.status(400).send("Invalid request. Could not find session with Id " + sessionId);
     return;
@@ -41,6 +41,8 @@ router.post('/playcard', async function (req, res) {
 
   player.removeCard(cardIndex);
   table.addCardTop(card);
+  session.players[playerId] = player;
+  await updateSession(session);
   res.status(200).send(session);
 
 });
@@ -48,12 +50,12 @@ router.post('/playcard', async function (req, res) {
 router.post('/drawcard', async function (req, res) {
   let sessionId = Number(req.body.sessionId);
   let playerId = Number(req.body.playerId);
-  let numOfCards = Number(req.body.numOfCards);
+  let numCards = Number(req.body.numCards);
 
-  if (isNaN(sessionId) || isNaN(playerId) || isNaN(numOfCards) || numOfCards <= 0) {
-    res.status(400).send('Invalid call. Needs sessionId, playerId, and numOfCards as positive numbers in the query.');
+  if (isNaN(sessionId) || isNaN(playerId) || isNaN(numCards) || numCards <= 0) {
+    res.status(400).send('Invalid call. Needs sessionId, playerId, and numCards as positive numbers in the query.');
   } else {
-    let currSession = getSession(sessionId);
+    let currSession = await getSession(sessionId);
 
     if (!currSession) {
       res.status(400).send(`Invalid request. Could not find session with Id ${sessionId}.`);
@@ -66,7 +68,10 @@ router.post('/drawcard', async function (req, res) {
       } else if (!player) {
           res.status(400).send(`Invalid request. Could not find player with Id ${playerId} in session ${sessionId}.`);
       } else {
-          res.status(200).send(cardDrawService.drawCards(deck, numOfCards, player));
+          const updatedCards = cardDrawService.drawCards(deck, numCards, player);
+          currSession.deck = updatedCards.deck;
+          await updateSession(currSession);
+          res.status(200).send(updatedCards);
       }
     }
   }
