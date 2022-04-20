@@ -114,6 +114,10 @@ router.post('/dealer', async function (req, res) {
             winners.push(player.name);
     }
 
+    session.gameState = 1;
+    session.table = table;
+    await updateSession(session);
+
     res.status(200).send({winners: winners, table: table});
 })
 

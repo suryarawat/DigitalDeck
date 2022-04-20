@@ -36,7 +36,6 @@
 
 <script>
 import Game from "./Game.vue";
-import { VueCookies } from "vue-cookies";
 
 export default {
   name: "lobby",
@@ -44,7 +43,6 @@ export default {
     Game
   },
   props: {
-    gamemode: Number,
     deckSelected: Number,
     name: String,
   },
@@ -54,7 +52,7 @@ export default {
     };
   },
   created() {
-    if ($cookies.get("isGameStarted") == 1) {
+    if (this.$store.getters.getGameInfo == 1) {
       this.isLoaded = true;
     }
     this.$socket.emit("joinRoom", this.$store.getters.getSessionId);
@@ -76,14 +74,13 @@ export default {
   },
   methods: {
     loadGame() {
-      $cookies.set("isGameStarted", 1, -1);
       this.$store
         .dispatch("distributeCards", {
           sessionId: this.$store.getters.getSessionId,
         })
         .then(() => {
           this.$socket.emit("gameStarted", this.$store.getters.getSessionId);
-          if (this.gamemode == 1) {
+          if (this.$store.getters.getGamemode == 1) {
             this.$store.dispatch("initBlackjack").then(() => {
               this.isLoaded = true;
             });

@@ -16,7 +16,8 @@ export default createStore({
         gamemode: -1,
         isCurrentTurn: false,
         gameState: 0,
-        winners: null
+        winners: null,
+        joinErrorMsg: null
     },
     mutations: {
         setSessionId(state, sessionId) {
@@ -82,6 +83,10 @@ export default createStore({
 
         setWinners(state, winners) {
             state.winners = winners;
+        },
+
+        setJoinErrorMsg(state, msg) {
+            state.joinErrorMsg = msg;
         }
     },
     actions: {
@@ -102,6 +107,7 @@ export default createStore({
                 commit('setGameState', 0);
                 commit('setCurrentTurn', false);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
+                $cookies.set('PlayerId', res.data.players[0].playerId, '1h');
                 UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
         },
@@ -111,32 +117,36 @@ export default createStore({
                 sessionId: state.sessionId
             }).then((res) => {
                 commit('setGameState', 0);
-                commit('setCurrentTurn', false);
                 commit('setCardsInDeck', res.data.deck.length);
                 commit('setTableCards', res.data.table);
-                commit("setCurrentTurn", true);
+                commit('setCurrentTurn', true);
             });
         },
 
-        joinSession({ commit, state }, sessionData) {
+        joinSession({ commit }, sessionData) {
             return axios.post(api_url + '/session/join', {
                 name: sessionData.name,
-                sessionId: sessionData.sessionId,
+                sessionId: sessionData.sessionId
             }).then((res) => {
-                if (res.status==200) {
-                    commit('setSessionId', res.data.sessionId);
-                    commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
-                    commit('setName', res.data.players[res.data.players.length - 1].name);
-                    commit('setPlayersInfo', res.data.players);
-                    commit('setGameState', 0);
-                    commit('setCurrentTurn', false);
-                    $cookies.set('SessionId', res.data.sessionId, '1h');
-                    UnitTests.testInitSession(state);
+                if (!res.data.gameStarted) {
+                    if (!res.data.isNameDuplicate) {
+                      commit('setSessionId', res.data.sessionId);
+                      commit('setPlayerId', res.data.players[res.data.players.length - 1].playerId);
+                      commit('setName', res.data.players[res.data.players.length - 1].name);
+                      commit('setPlayersInfo', res.data.players);
+                      commit('setGameState', 0);
+                      commit('setCurrentTurn', false);
+                      commit('setGameInfo', res.data.gameStarted);
+                      commit('setJoinErrorMsg', null);
+                      $cookies.set('SessionId', res.data.sessionId, '1h');
+                      $cookies.set('PlayerId', res.data.players[res.data.players.length - 1].playerId, '1h');
+                    } else {
+                      commit('setJoinErrorMsg', 'The name is already used by another player. Please choose a different name');
+                    }
                 }
                 else {
-                    commit('setGameInfo', true);
+                    commit('setJoinErrorMsg', 'Unable to join. Game has already started');
                 }
-                
             }).catch((err) => console.log(err));
         },
 
@@ -145,13 +155,16 @@ export default createStore({
                 params: { sessionId: id.sessionId }
             }).then((res) => {
                 commit('setSessionId', res.data.sessionId);
-                commit('setPlayerId', state.playerId);
+                commit('setPlayerId', Number($cookies.get('PlayerId')));
                 commit('setPlayerCards', res.data.players[state.playerId].cards);
                 commit('setTableCards', res.data.table);
                 commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
                 commit('setGamemode', res.data.gamemode);
+                commit('setGameInfo', res.data.gameStarted);
+                commit('setCurrentTurn', res.data.currentTurn == Number($cookies.get('PlayerId')) ? true: false);
+                commit('setGameState', res.data.gameState);
                 $cookies.set('SessionId', res.data.sessionId, '1h');
                 //UnitTests.testInitSession(state);
             }).catch((err) => console.log(err));
@@ -194,8 +207,8 @@ export default createStore({
                 commit('setCardsInDeck', res.data.deck.length);
                 commit('setName', res.data.players[state.playerId].name);
                 commit('setPlayersInfo', res.data.players);
+                commit('setGameInfo', res.data.gameStarted);
             }).catch((err) => console.log(err));
-
         },
 
         updatePlayerInfo({ commit }, sessionData) {
@@ -267,6 +280,10 @@ export default createStore({
 
         getWinners(state) {
             return state.winners;
+        },
+
+        getJoinErrorMsg(state) {
+            return state.joinErrorMsg;
         }
     }
 });

@@ -33,12 +33,12 @@ module.exports = class Session {
     }
   }
 
-  static async build(decks, players, cardsPerPlayer, cardsOnTable, gamemode){
+  static async build(decks, players, cardsPerPlayer, cardsOnTable, gamemode, gameStarted = false, currentTurn = 0, gameState = 0){
     const sessionId = await Session.findUniqueSessionId();
-    return new Session(decks, players, cardsPerPlayer, cardsOnTable, sessionId, gamemode);
+    return new Session(decks, players, cardsPerPlayer, cardsOnTable, sessionId, gamemode, gameStarted, currentTurn, gameState);
   }
 
-  constructor(decks, players, cardsPerPlayer, cardsOnTable, sessionId, gamemode = 0) {
+  constructor(decks, players, cardsPerPlayer, cardsOnTable, sessionId, gamemode = 0, gameStarted = false, currentTurn = 0, gameState = 0) {
     this.numDecks = decks;
     this.numPlayers = players;
     this.sessionId = Number(sessionId);
@@ -47,8 +47,10 @@ module.exports = class Session {
     this.deck=[];
     this.cardsPerPlayer = cardsPerPlayer;
     this.cardsOnTable= cardsOnTable;
-    this.gameStarted = false;
+    this.gameStarted = gameStarted;
     this.gamemode = gamemode;
+    this.currentTurn = currentTurn;
+    this.gameState = gameState;
     Player.resetPlayerCount();
     let newPlayer = new Player([], "", 0);
     newPlayer.isHost=true;

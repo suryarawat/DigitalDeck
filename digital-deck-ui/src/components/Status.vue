@@ -1,7 +1,7 @@
 <template>
   <div class="total">
     <div v-if="$store.getters.getGameState === 0">Current total: {{ total }}</div>
-    <div v-else>{{ winnersList }}</div>
+    <div v-if="this.$store.getters.getWinners">{{ winnersList }}</div>
     <button
       v-if="$store.getters.getGameState === 0"
       class="button"
@@ -48,10 +48,10 @@ export default {
     });
 
     this.$socket.on("gameResetted", () => {
+      this.$store.commit("setWinners", null);
       this.$store.dispatch("retrieveSession", {
         sessionId: this.$store.getters.getSessionId
       });
-      this.$store.commit("setGameState", 0);
     });
   },
 
@@ -106,6 +106,7 @@ export default {
 
     onResetClick() {
       this.$store.commit("setGameState", 0);
+      this.$store.commit("setWinners", null);
       this.$store.dispatch("distributeCards", {
         sessionId: this.$store.getters.getSessionId,
         doClear: true
@@ -120,20 +121,23 @@ export default {
 
     endTurn() {
       this.$store.commit("setCurrentTurn", false);
+      
       this.$socket.emit("endTurn", {
         sessionId: this.$store.getters.getSessionId,
         playerId: this.$store.getters.getPlayerId
       });
 
-      if (this.$store.getters.getPlayerId >= this.$store.getters.getPlayersInfo.length - 1) {
-        this.$store.dispatch("dealersTurn").then(() => {
-          this.$store.commit("setGameState", 1);
-          this.$socket.emit("endGame", {
-            sessionId: this.$store.getters.getSessionId,
-            table: { cards: this.$store.getters.getTableCards },
-            winners: this.$store.getters.getWinners
+      if (this.$store.getters.getGameState === 0) {
+        if (this.$store.getters.getPlayerId >= this.$store.getters.getPlayersInfo.length - 1) {
+          this.$store.dispatch("dealersTurn").then(() => {
+            this.$store.commit("setGameState", 1);
+            this.$socket.emit("endGame", {
+              sessionId: this.$store.getters.getSessionId,
+              table: { cards: this.$store.getters.getTableCards },
+              winners: this.$store.getters.getWinners
+            });
           });
-        });
+        }
       }
     }
   },
