@@ -85,8 +85,11 @@
         >
         <span v-else><strong> for number of decks</strong></span>
       </p>
+      <p v-if="$store.getters.getJoinErrorMsg">
+        <strong>{{ $store.getters.getJoinErrorMsg }}</strong>
+      </p>
     </div>
-    <lobby v-if="isLoaded" :gamemode="gamemode" :deck-selected="parseInt(deckSelected)" :name="name" />
+    <lobby v-if="isLoaded" :deck-selected="parseInt(deckSelected)" :name="name" />
     <button v-if="isLoaded" class="exit-button" @click="closeSession">X</button>
   </div>
 </template>
@@ -181,31 +184,25 @@ export default {
       }
     },
 
-    async joinRoomForm() {
-      if (this.roomid!=null    ) {
-            this.$store.dispatch("joinSession", {
-            sessionId: this.roomid,
-            name: this.joinname,
-          })
-          .then(() => {
-            //  this.$socket.emit('joinRoom', this.$store.getters.getSessionId);
-             if (this.$store.getters.getGameInfo) {
-               console.log("You cant join");
-             }
-             else {
-             this.isLoaded = true;
-             }
-          });
-      }        
-      else {
-      console.log("Wrong room id enter again ");
+    joinRoomForm() {
+      if (this.roomid != null) {
+        this.$store.dispatch("joinSession", {
+          sessionId: this.roomid,
+          name: this.joinname,
+        }).then(() => {
+          if (!this.$store.getters.getJoinErrorMsg) {
+            this.isLoaded = true;
+          }
+        });
       }
     },
 
     closeSession() {
       $cookies.set("SessionId", -1, "1h");
+      $cookies.set("PlayerId", -1, "1h");
       $cookies.set("Gamemode", -1, "1h");
-      $cookies.set("isGameStarted", -1, -1);
+      this.$store.commit("setGameInfo", false);
+      this.$store.commit("setPlayerId", -1);
       this.isLoaded = false;
     },
 

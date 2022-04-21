@@ -19,7 +19,7 @@ export default {
     };
   },
   mounted() {
-    this.$socket.on("cardDrawn", ({ deck, player }) => {
+    this.$socket.on("cardDrawn", ({ deck }) => {
         this.$store.commit('setCardsInDeck', deck);
     });
   },

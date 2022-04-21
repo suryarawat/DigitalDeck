@@ -3,7 +3,7 @@
     <div class="player-info" v-for="player in playersList" :key="player.name">
         <span class="names">{{player.name}}</span>
         <br/>
-        <span class="cards">{{player.numCards}} X </span><img :src="cardImage()"/>
+        <span class="cards">{{player.numCards}} X </span><img :src="cardImage()" alt="Card back"/>
     </div>
   </div>
 </template>

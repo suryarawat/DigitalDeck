@@ -16,12 +16,7 @@ function handleSocket(io) {
         });
 
         socket.on('gameStarted', async (sessionId) => {
-            let session = await getSession(sessionId);
-            console.log("game Started for a player");
-            // session.gameStarted = true;
-            // await updateSession(session);
-            // emit to others which are in the same room
-            socket.to(sessionId).emit("launchGame", session);
+            socket.to(sessionId).emit("launchGame");
 
         });
 
@@ -30,25 +25,31 @@ function handleSocket(io) {
         });
 
         socket.on('drawCard', ({ sessionId, numCards, player }) => {
-            socket.to(sessionId).emit('cardDrawn', { deck: numCards, player: player });
+            socket.to(sessionId).emit('cardDrawn', { deck: numCards });
             socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
         socket.on("playCard", ({ sessionId, cardsOnTable, player }) => {
-            socket.to(sessionId).emit("cardPlayed", { table: { cards: cardsOnTable }, player: player });
+            socket.to(sessionId).emit("cardPlayed", { table: { cards: cardsOnTable } });
             socket.to(sessionId).emit("updateOtherPlayersInfo", {name: player.name, numCards: player.numCards});
         });
 
-        socket.on("endTurn", ({ sessionId, playerId }) => {
-            socket.to(sessionId).emit("setTurn", {playerId: ++playerId});
+        socket.on("endTurn", async ({ sessionId, playerId }) => {
+            let session = await getSession(sessionId);
+            session.currentTurn = playerId + 1;
+            await updateSession(session);
+            socket.to(sessionId).emit("setTurn", { playerId: session.currentTurn });
         });
 
         socket.on("endGame", ({ sessionId, table, winners }) => {
             socket.to(sessionId).emit("gameEnded", { table: table, winners: winners });
         });
 
-        socket.on("resetGame", ({ sessionId }) => {
-            console.log('test');
+        socket.on("resetGame", async ({ sessionId }) => {
+            let session = await getSession(sessionId);
+            session.currentTurn = 0;
+            session.gameState = 0;
+            await updateSession(session);
             socket.to(sessionId).emit("gameResetted");
         });
     });

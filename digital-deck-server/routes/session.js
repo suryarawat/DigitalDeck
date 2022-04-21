@@ -30,7 +30,7 @@ router.post('/new', async function (req, res) {
         res.status(400).send('Invalid request. Needs decks, players, cardsPerPlayer, and cardsOnTable as positive numbers.');
     } else {
       //just make a session of only 1 player right now 
-        currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable, gamemode);
+        var currSession = await Session.build(decks, players, cardsPerPlayer, cardsOnTable, gamemode);
         currSession.players[0].setName(name); 
         await addSession(currSession);
         cleanSession(currSession);
@@ -107,6 +107,7 @@ router.post('/distributecards', async function (req, res) {
         ); 
         currSession.table= new Table(distributed.table.cards);
         currSession.deck= distributed.deck;
+        currSession.gameStarted = true;
         await updateSession(currSession);
         res.status(200).send(currSession);
       }
@@ -132,14 +133,20 @@ router.post('/join', async function (req, res) {
     } else {
       try {
         if (!currSession.gameStarted) {
-          let newPlayer = Player.build([],name, currSession.players.length); //new player made
-          currSession.players.push(newPlayer);
-          currSession.numPlayers++;
-          await updateSession(currSession);
-          //playerid is updated with zero cards..
-          res.status(200).send(currSession);
+          if (currSession.players.filter((p) => p.name === name).length === 0) {
+            let newPlayer = Player.build([],name, currSession.players.length); //new player made
+            currSession.players.push(newPlayer);
+            currSession.numPlayers++;
+            await updateSession(currSession);
+            //playerid is updated with zero cards..
+            res.status(200).send(currSession);
+          } else {
+            res.status(200).send({ isNameDuplicate: true });
+          }
         }
-        
+        else {
+          res.status(200).send({ gameStarted: true });
+        }
       }
       catch (err){
         console.log(err);

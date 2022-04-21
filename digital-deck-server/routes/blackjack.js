@@ -81,7 +81,7 @@ router.post('/surrender', async function (req, res) {
 })
 
 router.post('/dealer', async function (req, res) {
-    var sessionId = req.body.sessionId;
+    var sessionId = Number(req.body.sessionId);
 
     if (isNaN(sessionId)) {
         res.status(400).send("Invalid call. Needs sessionId as a number in the query.");
@@ -107,12 +107,16 @@ router.post('/dealer', async function (req, res) {
 
     var players = session.players
     var winners = []
-    for(var i = 0; i < players.length; i++)
+    for (var player of players)
     {
-        var playerSum = sumOfCards(players[i].cards);
+        var playerSum = sumOfCards(player.cards);
         if((dealersum > 21 || playerSum >= dealersum) && playerSum <= 21 && !isNaN(playerSum))
-            winners.push(players[i].name);
+            winners.push(player.name);
     }
+
+    session.gameState = 1;
+    session.table = table;
+    await updateSession(session);
 
     res.status(200).send({winners: winners, table: table});
 })
