@@ -1,0 +1,33 @@
+config:
+  target: "http://35.192.81.46:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 20
+      name: "Warming up"
+    - duration: 120
+      arrivalRate: 20
+      rampTo: 100
+      name: "Ramping up"
+    - duration: 300
+      arrivalRate: 100
+      name: "Sustained load"
+  ensure:
+    p99: 150
+    maxErrorRate: 1
+    max: 500
+ 
+scenarios:
+  - name: "Create lobby"
+    flow:
+      - get:
+          url: "/"
+      - think: 1
+      - post:
+          url: "/session/new"
+          json:
+            decks: "[1,2,3,4]"
+            players: "1"
+            name: "host"
+            cardsPerPlayer: "1"
+            cardsOnTable: "4"
+            gamemode: "0"
