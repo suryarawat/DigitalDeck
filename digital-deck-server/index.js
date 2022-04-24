@@ -29,7 +29,7 @@ const port = 5000;
 
 handleSocket(io);
 
-app.use(cors());
+app.use(cors(origin='*'));
 app.use(bodyParser.json());
 
 app.use('/session', sessionRoute);
