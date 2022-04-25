@@ -7,7 +7,7 @@ import MainMenu from "./components/MainMenu.vue";
 
 export let api_url =  "http://localhost:5000";
 if ( process.env.NODE_ENV === 'production'){
-    api_url = 'http://34.135.132.39/:5000';
+    api_url = 'http://35.192.55.227:5000';
 }
 
 export default {
